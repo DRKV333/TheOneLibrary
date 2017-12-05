@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FE14625B-5827-4C2C-B11B-DE3F22AE17B2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>TheOneLibrary</RootNamespace>
+    <AssemblyName>TheOneLibrary</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553" />
+    <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553" />
+    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553" />
+    <Reference Include="ReLogic">
+      <HintPath>..\EnergyLib\bin\Debug\ReLogic.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Terraria">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Terraria Modded\Terraria.exe</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Base\Attributes.cs" />
+    <Compile Include="Base\BaseTE.cs" />
+    <Compile Include="Base\BaseTile.cs" />
+    <Compile Include="Base\Items\BaseItem.cs" />
+    <Compile Include="Base\Items\Wrench.cs" />
+    <Compile Include="Base\NetHelper.cs" />
+    <Compile Include="Energy\EnergySerializer.cs" />
+    <Compile Include="Energy\Energy\EnergyStorage.cs" />
+    <Compile Include="Energy\Energy\IEnergyHandler.cs" />
+    <Compile Include="Energy\Energy\IEnergyProvider.cs" />
+    <Compile Include="Energy\Energy\IEnergyReceiver.cs" />
+    <Compile Include="Energy\Energy\IEnergyStorage.cs" />
+    <Compile Include="Energy\UIEnergyBar.cs" />
+    <Compile Include="Energy\Utility.cs" />
+    <Compile Include="Fluid\FluidLoader.cs" />
+    <Compile Include="Fluid\ModFluid.cs" />
+    <Compile Include="Fluid\VanillaFluids\Honey.cs" />
+    <Compile Include="Fluid\VanillaFluids\Lava.cs" />
+    <Compile Include="Fluid\VanillaFluids\Water.cs" />
+    <Compile Include="Heat\HeatSerializer.cs" />
+    <Compile Include="Heat\Heat\HeatStorage.cs" />
+    <Compile Include="Heat\Heat\IHeatHandler.cs" />
+    <Compile Include="Heat\Heat\IHeatProvider.cs" />
+    <Compile Include="Heat\Heat\IHeatReceiver.cs" />
+    <Compile Include="Heat\Heat\IHeatStorage.cs" />
+    <Compile Include="Heat\UIHeatBar.cs" />
+    <Compile Include="Layer\Items\LayerTool.cs" />
+    <Compile Include="Layer\Items\Monocle.cs" />
+    <Compile Include="Layer\LayerDisplayUI.cs" />
+    <Compile Include="Layer\LayerLib.cs" />
+    <Compile Include="Layer\Layer\CustomDictionary.cs" />
+    <Compile Include="Layer\Layer\Info.cs" />
+    <Compile Include="Layer\Layer\Layer.cs" />
+    <Compile Include="Layer\Utility.cs" />
+    <Compile Include="Recipe\ItemRecipe.cs" />
+    <Compile Include="Recipe\Utility.cs" />
+    <Compile Include="Storage\Container\IContainer.cs" />
+    <Compile Include="Storage\Container\UIContainerSlot.cs" />
+    <Compile Include="Storage\Utility.cs" />
+    <Compile Include="TheOneLibrary.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Base\UI\BaseUI.cs" />
+    <Compile Include="Base\UI\Elements\BaseElement.cs" />
+    <Compile Include="Base\UI\Elements\UIButton.cs" />
+    <Compile Include="Base\UI\Elements\UIColor.cs" />
+    <Compile Include="Base\UI\Elements\UIColorBar.cs" />
+    <Compile Include="Base\UI\Elements\UICycleButton.cs" />
+    <Compile Include="Base\UI\Elements\UIGrid.cs" />
+    <Compile Include="Base\UI\Elements\UIGridVisibility.cs" />
+    <Compile Include="Base\UI\Elements\UIItemSlot.cs" />
+    <Compile Include="Base\UI\Elements\UIReverseGrid.cs" />
+    <Compile Include="Base\UI\Elements\UISlider.cs" />
+    <Compile Include="Base\UI\Elements\UITextButton.cs" />
+    <Compile Include="Base\UI\Elements\UITextInput.cs" />
+    <Compile Include="Base\UI\Elements\UIToggleButton.cs" />
+    <Compile Include="Base\UI\GUI.cs" />
+    <Compile Include="Base\UI\TileEntityUI.cs" />
+    <Compile Include="Base\Utility\Utility.cs" />
+    <Compile Include="Base\Utility\WorldUtility.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="build.txt" />
+    <Content Include="description.txt" />
+    <Content Include="Textures\BarCorner.png" />
+    <Content Include="Textures\BarSide.png" />
+    <Content Include="Textures\Placeholder.png" />
+    <Content Include="Textures\Placeholder_Arms.png" />
+    <Content Include="Textures\Placeholder_Body.png" />
+    <Content Include="Textures\Placeholder_FemaleBody.png" />
+    <Content Include="Textures\Placeholder_Head.png" />
+    <Content Include="Textures\Placeholder_Legs.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>"C:\Program Files (x86)\Steam\steamapps\common\Terraria Modded\tModLoaderServer.exe" -build "$(ProjectDir)\" -eac "$(TargetPath)"</PostBuildEvent>
+  </PropertyGroup>
+</Project>
