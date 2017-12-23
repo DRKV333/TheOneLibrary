@@ -2,7 +2,7 @@
 {
 	public class Water : ModFluid
 	{
-		public override string Texture => TheOneLibrary.PlaceholderTexture;
+		public override string Texture => TheOneLibrary.TexturePath + "Fluid/Water";
 
 		public override void SetDefaults()
 		{

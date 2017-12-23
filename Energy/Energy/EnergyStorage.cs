@@ -5,11 +5,6 @@ namespace TheOneLibrary.Energy.Energy
 {
 	public class EnergyStorage : IEnergyStorage
 	{
-		// Config
-		public const string EnergyUnit = "J";
-		public const string EnergyUnitPerSecond = "W";
-		// ---
-
 		internal long energy;
 		internal long capacity;
 		internal long maxReceive;
@@ -105,6 +100,6 @@ namespace TheOneLibrary.Energy.Energy
 
 		public EnergyStorage GetEnergyStorage() => this;
 
-		public override string ToString() => energy.ToSI() + "/" + capacity.ToSI() + EnergyUnit;
+		public override string ToString() => energy.ToSI() + "/" + capacity.ToSI() + TheOneLibrary.Config.EnergyUnit;
 	}
 }

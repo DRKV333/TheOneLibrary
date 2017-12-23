@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -18,7 +18,7 @@ namespace TheOneLibrary.Layer.Items
 
 		public override ModItem Clone(Item item)
 		{
-			LayerTool clone = (LayerTool)base.Clone(item);
+			LayerTool clone = (LayerTool) base.Clone(item);
 			clone.mode = mode;
 			return clone;
 		}
@@ -53,6 +53,7 @@ namespace TheOneLibrary.Layer.Items
 		}
 
 		public const string InfoColor = "00B19C";
+
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			tooltips.Add(new TooltipLine(mod, "CurrentMode", $"Current mode: [c/00d948:{mode}]"));
@@ -145,22 +146,22 @@ namespace TheOneLibrary.Layer.Items
 
 		public override TagCompound Save() => new TagCompound
 		{
-			["Mode"] = (int)mode
+			["Mode"] = (int) mode
 		};
 
 		public override void Load(TagCompound tag)
 		{
-			mode = (Mode)tag.GetInt("Mode");
+			mode = (Mode) tag.GetInt("Mode");
 		}
 
 		public override void NetSend(BinaryWriter writer)
 		{
-			writer.Write((int)mode);
+			writer.Write((int) mode);
 		}
 
 		public override void NetRecieve(BinaryReader reader)
 		{
-			mode = (Mode)reader.ReadInt32();
+			mode = (Mode) reader.ReadInt32();
 		}
 	}
 }

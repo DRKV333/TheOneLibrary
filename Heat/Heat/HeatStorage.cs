@@ -1,5 +1,4 @@
 ﻿using System;
-using Terraria.ModLoader.IO;
 using TheOneLibrary.Utility;
 
 namespace TheOneLibrary.Heat.Heat
@@ -101,6 +100,6 @@ namespace TheOneLibrary.Heat.Heat
 
 		public HeatStorage GetHeatStorage() => this;
 
-		public override string ToString() => heat.ToSI() + "/" + capacity.ToSI() + "HU";
+		public override string ToString() => heat.ToSI() + "/" + capacity.ToSI() + TheOneLibrary.Config.HeatUnit;
 	}
 }

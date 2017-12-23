@@ -1,5 +1,4 @@
-﻿using System;
-using Terraria.ModLoader;
+﻿using Terraria.ModLoader;
 
 namespace TheOneLibrary.Fluid
 {
@@ -10,23 +9,13 @@ namespace TheOneLibrary.Fluid
 
 		public int volume;
 
-		public ModTranslation DisplayName
-		{
-			get;
-			internal set;
-		}
+		public ModTranslation DisplayName { get; internal set; }
 
-		public string Name
-		{
-			get;
-			internal set;
-		}
+		public string Name { get; internal set; }
 
-		public Mod mod
-		{
-			get;
-			internal set;
-		}
+		public Mod mod { get; internal set; }
+
+		public virtual ModFluid Clone() => (ModFluid) MemberwiseClone();
 
 		public virtual string Texture => (GetType().Namespace + "." + Name).Replace('.', '/');
 
@@ -34,7 +23,6 @@ namespace TheOneLibrary.Fluid
 
 		public virtual void SetStaticDefaults()
 		{
-
 		}
 
 		public void AutoStaticDefaults()
@@ -44,13 +32,11 @@ namespace TheOneLibrary.Fluid
 
 		public virtual void SetDefaults()
 		{
-
 		}
 
 		public virtual ModFluid NewInstance()
 		{
-			var copy = (ModFluid)Activator.CreateInstance(GetType());
-			copy = this;
+			var copy = (ModFluid) MemberwiseClone();
 			return copy;
 		}
 	}

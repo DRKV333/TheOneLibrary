@@ -7,5 +7,7 @@
 		long ExtractEnergy(long maxExtract);
 	}
 
-	public interface IEnergyItem : IEnergyStorage { }
+	public interface IEnergyItem : IEnergyStorage
+	{
+	}
 }

@@ -2,7 +2,7 @@
 {
 	public class Honey : ModFluid
 	{
-		public override string Texture => TheOneLibrary.PlaceholderTexture;
+		public override string Texture => TheOneLibrary.TexturePath + "Fluid/Honey";
 
 		public override void SetDefaults()
 		{

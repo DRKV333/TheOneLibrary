@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
@@ -128,7 +128,6 @@ namespace TheOneLibrary.UI.Elements
 					left = 0;
 				}
 				else left += items[i].GetOuterDimensions().Width + ListPadding;
-
 			}
 
 			innerListHeight = items.Select(x => x.GetDimensions().Height + ListPadding).Sum();
@@ -178,7 +177,7 @@ namespace TheOneLibrary.UI.Elements
 			RecalculateChildren();
 			Recalculate();
 			base.DrawSelf(spriteBatch);
-			typeof(UIInnerList).InvokeMethod<object>("DrawChildren", new object[] { spriteBatch }, innerList);
+			typeof(UIInnerList).InvokeMethod<object>("DrawChildren", new object[] {spriteBatch}, innerList);
 
 			spriteBatch.GraphicsDevice.ScissorRectangle = prevRect;
 			spriteBatch.DisableScissor();

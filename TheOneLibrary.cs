@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -9,26 +10,29 @@ using Terraria.Graphics;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
+using TheOneLibrary.Base;
 using TheOneLibrary.Fluid;
 using TheOneLibrary.Layer;
 using TheOneLibrary.Layer.Items;
 using TheOneLibrary.Recipe;
 using TheOneLibrary.Serializers;
+using TheOneLibrary.Utility;
 
 namespace TheOneLibrary
 {
 	public class TheOneLibrary : Mod
 	{
-		public static TheOneLibrary Instance;
+		[Null] public static TheOneLibrary Instance;
+		[Null] public static TOLConfig Config;
 
 		public const string TexturePath = "TheOneLibrary/Textures/";
 		public const string PlaceholderTexture = TexturePath + "Placeholder";
 
-		public static Texture2D borderTexture;
-		public static Texture2D backgroundTexture;
+		[Null] public static Texture2D borderTexture;
+		[Null] public static Texture2D backgroundTexture;
 
-		public static Texture2D corner;
-		public static Texture2D side;
+		[Null] public static Texture2D corner;
+		[Null] public static Texture2D side;
 
 		public LayerDisplayUI LayerDisplayUI;
 		public UserInterface ILayerDisplayUI;
@@ -57,10 +61,11 @@ namespace TheOneLibrary
 
 			TagSerializer.AddSerializer(new EnergySerializer());
 			TagSerializer.AddSerializer(new HeatSerializer());
+			TagSerializer.AddSerializer(new FluidSerializer());
 
 			FluidLoader.Autoload();
 			FluidLoader.SetupContent();
-
+			
 			Main.OnPostDraw += Draw;
 
 			if (!Main.dedServ)
@@ -76,17 +81,13 @@ namespace TheOneLibrary
 		{
 			recipes.Clear();
 
-			borderTexture = null;
-			backgroundTexture = null;
-
-			corner = null;
-			side = null;
-
 			FluidLoader.Unload();
 
 			Main.OnPostDraw -= Draw;
 
-			Instance = null;
+			this.UnloadNullableTypes();
+
+			GC.Collect();
 		}
 
 		public void Draw(GameTime gameTime)
@@ -118,6 +119,7 @@ namespace TheOneLibrary
 		}
 
 		public int index = -1;
+
 		public override void PostUpdateInput()
 		{
 			if (Main.keyState.GetPressedKeys().Any(x => x == Keys.RightControl) && Utility.Utility.HeldItem.type == ItemType<LayerTool>())
@@ -153,7 +155,7 @@ namespace TheOneLibrary
 
 		public static void RedundantFunc()
 		{
-			var something = System.Linq.Enumerable.Range(1, 10);
+			var something = Enumerable.Range(1, 10);
 		}
 	}
 }

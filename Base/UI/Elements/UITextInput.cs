@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.UI;
+using TheOneLibrary.Utility;
 
 namespace TheOneLibrary.UI.Elements
 {
@@ -34,6 +35,11 @@ namespace TheOneLibrary.UI.Elements
 			else Focus();
 
 			base.Click(evt);
+		}
+
+		public override void RightClick(UIMouseEvent evt)
+		{
+			currentString = "";
 		}
 
 		public void Focus()
@@ -97,7 +103,7 @@ namespace TheOneLibrary.UI.Elements
 
 		public override void Update(GameTime gameTime)
 		{
-			if (Main.keyState.IsKeyDown(Keys.Enter) || Main.keyState.IsKeyDown(Keys.Escape)) Unfocus();
+			if (Keys.Enter.IsKeyDown() || Keys.Escape.IsKeyDown()) Unfocus();
 		}
 	}
 }

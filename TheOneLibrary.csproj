@@ -44,11 +44,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="Terraria">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Terraria Modded\Terraria.exe</HintPath>
@@ -59,6 +54,7 @@
     <Compile Include="Base\BaseTE.cs" />
     <Compile Include="Base\BaseTile.cs" />
     <Compile Include="Base\Items\BaseItem.cs" />
+    <Compile Include="Base\Items\DevItem.cs" />
     <Compile Include="Base\Items\Wrench.cs" />
     <Compile Include="Base\NetHelper.cs" />
     <Compile Include="Energy\EnergySerializer.cs" />
@@ -69,8 +65,11 @@
     <Compile Include="Energy\Energy\IEnergyStorage.cs" />
     <Compile Include="Energy\UIEnergyBar.cs" />
     <Compile Include="Energy\Utility.cs" />
+    <Compile Include="Fluid\Bucket.cs" />
     <Compile Include="Fluid\FluidLoader.cs" />
+    <Compile Include="Fluid\FluidSerializer.cs" />
     <Compile Include="Fluid\ModFluid.cs" />
+    <Compile Include="Fluid\Utility.cs" />
     <Compile Include="Fluid\VanillaFluids\Honey.cs" />
     <Compile Include="Fluid\VanillaFluids\Lava.cs" />
     <Compile Include="Fluid\VanillaFluids\Water.cs" />
@@ -114,6 +113,7 @@
     <Compile Include="Base\UI\TileEntityUI.cs" />
     <Compile Include="Base\Utility\Utility.cs" />
     <Compile Include="Base\Utility\WorldUtility.cs" />
+    <Compile Include="TOLConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

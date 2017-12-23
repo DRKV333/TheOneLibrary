@@ -42,8 +42,8 @@ namespace TheOneLibrary.UI.Elements
 		{
 			if (visible && texture != null)
 			{
-				CalculatedStyle dimensions = base.GetDimensions();
-				spriteBatch.Draw(texture, new Rectangle((int)dimensions.X, (int)dimensions.Y, (int)dimensions.Width, (int)dimensions.Height), color * (toggleOnHover && toggle ? opacityActive : opacityInactive));
+				CalculatedStyle dimensions = GetDimensions();
+				spriteBatch.Draw(texture, new Rectangle((int) dimensions.X, (int) dimensions.Y, (int) dimensions.Width, (int) dimensions.Height), color * (toggleOnHover && toggle ? opacityActive : opacityInactive));
 
 				if (IsMouseHovering && !string.IsNullOrWhiteSpace(Text))
 				{

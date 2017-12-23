@@ -6,6 +6,7 @@ using TheOneLibrary.Fluid;
 namespace TheOneLibrary.Storage
 {
 	#region Item
+
 	public interface IContainer
 	{
 		IList<Item> GetItems();
@@ -13,7 +14,6 @@ namespace TheOneLibrary.Storage
 
 	public interface IContainerItem : IContainer
 	{
-
 	}
 
 	public interface IContainerTile : IContainer
@@ -27,6 +27,7 @@ namespace TheOneLibrary.Storage
 
 		IList<Item> GetOutputSlots();
 	}
+
 	#endregion
 
 	#region Fluid
@@ -42,5 +43,6 @@ namespace TheOneLibrary.Storage
 
 		IList<ModFluid> GetOutputTanks();
 	}
+
 	#endregion
 }

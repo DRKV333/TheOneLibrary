@@ -88,7 +88,7 @@ namespace TheOneLibrary.Utility
 			int ID = mod.GetID<T>(i, j);
 			if (ID == -1) return;
 
-			((BaseTE)TileEntity.ByID[ID]).drawInfo = true;
+			((BaseTE) TileEntity.ByID[ID]).drawInfo = true;
 		}
 
 		public static TileObjectDirection GetDirection(int i, int j, int type)
@@ -99,6 +99,7 @@ namespace TheOneLibrary.Utility
 			TileObjectData.GetTileInfo(tile, ref style, ref alt);
 			return TileObjectData.GetTileData(type, style, alt).Direction;
 		}
+
 		#endregion
 
 		#region UI
@@ -140,13 +141,13 @@ namespace TheOneLibrary.Utility
 
 		public static bool IsKeyDown(this Keys key) => Main.keyState.IsKeyDown(key) && !Main.oldKeyState.IsKeyDown(key);
 
-		public static bool IsKeyDown(this int key) => IsKeyDown((Keys)key);
+		public static bool IsKeyDown(this int key) => IsKeyDown((Keys) key);
 
 		public static void HandleUIFar(this ModTileEntity tileEntity, int distance = 320)
 		{
 			Dictionary<ModTileEntity, GUI> UIs = tileEntity.mod.GetTEUIs();
 
-			if (UIs.Any())
+			if (UIs != null)
 			{
 				Tile tile = Main.tile[tileEntity.Position.X, tileEntity.Position.Y];
 
@@ -164,26 +165,24 @@ namespace TheOneLibrary.Utility
 				}
 
 				Vector2 center = new Vector2(tileEntity.Position.X * 16 + offsetX, tileEntity.Position.Y * 16 + offsetY);
-				if (Vector2.Distance(Main.LocalPlayer.Center, center) >= distance && UIs.ContainsKey(tileEntity)) UIs.Remove(tileEntity); 
+				if (Vector2.Distance(Main.LocalPlayer.Center, center) >= distance && UIs.ContainsKey(tileEntity)) UIs.Remove(tileEntity);
 			}
 		}
 
 		internal static Dictionary<ModTileEntity, GUI> GetTEUIs(this Mod mod)
 		{
 			List<FieldInfo> fields = mod.GetType().GetFields().ToList();
-			FieldInfo teUI = fields.FirstOrDefault(x => x.HasAttribute<UIAttribute>() && ((UIAttribute)x.GetCustomAttributes().First(y => y.GetType() == typeof(UIAttribute))).Name == "TileEntity");
-			if (teUI != null && teUI.FieldType == typeof(Dictionary<ModTileEntity, GUI>)) return (Dictionary<ModTileEntity, GUI>)teUI.GetValue(mod);
-
-			return new Dictionary<ModTileEntity, GUI>();
+			FieldInfo teUI = fields.FirstOrDefault(x => x.HasAttribute<UIAttribute>() && ((UIAttribute) x.GetCustomAttributes().First(y => y.GetType() == typeof(UIAttribute))).Name == "TileEntity");
+			return teUI != null && teUI.FieldType == typeof(Dictionary<ModTileEntity, GUI>) ? (Dictionary<ModTileEntity, GUI>) teUI.GetValue(mod) : null;
 		}
 
 		public static void HandleUI<T>(this Mod mod, int ID) where T : BaseUI
 		{
 			Dictionary<ModTileEntity, GUI> UIs = mod.GetTEUIs();
 
-			if (UIs.Any()&&ID >= 0)
+			if (UIs != null && ID >= 0)
 			{
-				ModTileEntity tileEntity = (ModTileEntity)TileEntity.ByID[ID];
+				ModTileEntity tileEntity = (ModTileEntity) TileEntity.ByID[ID];
 				if (!UIs.ContainsKey(tileEntity)) tileEntity.OpenUI<T>();
 				else mod.CloseUI(ID);
 			}
@@ -193,23 +192,26 @@ namespace TheOneLibrary.Utility
 		{
 			Dictionary<ModTileEntity, GUI> UIs = tileEntity.mod.GetTEUIs();
 
-			BaseUI ui = Activator.CreateInstance<T>();
-			((ITileEntityUI)ui).SetTileEntity(tileEntity);
-			UserInterface userInterface = new UserInterface();
-			ui.Activate();
-			ui.visible = true;
-			ui.Load();
-			userInterface.SetState(ui);
-			UIs.Add(tileEntity, new GUI(ui, userInterface));
+			if (UIs != null)
+			{
+				BaseUI ui = Activator.CreateInstance<T>();
+				((ITileEntityUI) ui).SetTileEntity(tileEntity);
+				UserInterface userInterface = new UserInterface();
+				ui.Activate();
+				ui.visible = true;
+				ui.Load();
+				userInterface.SetState(ui);
+				UIs.Add(tileEntity, new GUI(ui, userInterface));
+			}
 		}
 
 		public static void CloseUI(this Mod mod, int ID)
 		{
 			Dictionary<ModTileEntity, GUI> UIs = mod.GetTEUIs();
 
-			if (UIs.Any()&& ID >= 0)
+			if (UIs != null && ID >= 0)
 			{
-				ModTileEntity tileEntity = (ModTileEntity)TileEntity.ByID[ID];
+				ModTileEntity tileEntity = (ModTileEntity) TileEntity.ByID[ID];
 				if (UIs.ContainsKey(tileEntity)) UIs.Remove(tileEntity);
 			}
 		}
@@ -225,12 +227,12 @@ namespace TheOneLibrary.Utility
 		public static LocalizedText TextFromTranslation(this ModTranslation translation)
 		{
 			Type type = typeof(LocalizedText);
-			return (LocalizedText)type.Assembly.CreateInstance(type.FullName, false, BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] { translation.Key, translation.GetTranslation(Language.ActiveCulture.LegacyId) }, null, null);
+			return (LocalizedText) type.Assembly.CreateInstance(type.FullName, false, BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] {translation.Key, translation.GetTranslation(Language.ActiveCulture.LegacyId)}, null, null);
 		}
 
 		public static void EnableScissor(this SpriteBatch spriteBatch)
 		{
-			RasterizerState state = new RasterizerState { ScissorTestEnable = true };
+			RasterizerState state = new RasterizerState {ScissorTestEnable = true};
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, state, null, Main.UIScaleMatrix);
@@ -244,11 +246,12 @@ namespace TheOneLibrary.Utility
 
 		public static void SetupForShader(this SpriteBatch spriteBatch, Effect shader)
 		{
-			RasterizerState state = new RasterizerState { ScissorTestEnable = true };
+			RasterizerState state = new RasterizerState {ScissorTestEnable = true};
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, null, state, shader, Main.UIScaleMatrix);
 		}
+
 		#endregion
 
 		#region Inventory
@@ -258,10 +261,7 @@ namespace TheOneLibrary.Utility
 			return count >= stack;
 		}
 
-		public static bool HasItems(this Player player, List<Item> items)
-		{
-			return items.All(t => player.HasItem(t.type, t.stack));
-		}
+		public static bool HasItems(this Player player, List<Item> items) => items.All(t => player.HasItem(t.type, t.stack));
 
 		public static void ConsumeItem(this Player player, int type, int stack)
 		{
@@ -345,47 +345,60 @@ namespace TheOneLibrary.Utility
 		public static bool HasWrench => HeldItem.modItem is Wrench;
 
 		public static bool IsCoin(this Item item) => item.type == ItemID.CopperCoin || item.type == ItemID.SilverCoin || item.type == ItemID.GoldCoin || item.type == ItemID.PlatinumCoin;
+
 		#endregion
 
 		#region Reflection
-		public static T GetField<T>(this Type type, string name, object obj = null, BindingFlags flags = defaultFlags) => (T)type.GetField(name, flags)?.GetValue(obj);
+
+		public static T GetField<T>(this Type type, string name, object obj = null, BindingFlags flags = defaultFlags) => (T) type.GetField(name, flags)?.GetValue(obj);
 
 		public static void SetField(this Type type, string name, object value, object obj = null, BindingFlags flags = defaultFlags) => type.GetField(name, flags)?.SetValue(obj, value);
 
-		public static T InvokeMethod<T>(this Type type, string name, object[] args, object obj = null, BindingFlags flags = defaultFlags) => (T)type.GetMethod(name, flags)?.Invoke(obj, args);
+		public static T InvokeMethod<T>(this Type type, string name, object[] args, object obj = null, BindingFlags flags = defaultFlags) => (T) type.GetMethod(name, flags)?.Invoke(obj, args);
 
 		public static bool HasAttribute<T>(this FieldInfo field) => field.GetCustomAttributes().Any(x => x.GetType() == typeof(T));
+
+		public static bool HasAttribute<T>(this PropertyInfo field) => field.GetCustomAttributes().Any(x => x.GetType() == typeof(T));
 
 		#endregion
 
 		#region Color
+
 		public static Color DoubleLerp(Color c1, Color c2, Color c3, float step) => step < .5f ? Color.Lerp(c1, c2, step * 2f) : Color.Lerp(c2, c3, (step - .5f) * 2f);
 
 		public static string RGBToHex(Color color) => color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
+
 		#endregion
 
 		#region Collections
+
 		public static bool ContainsAll<T>(this List<T> subset, List<T> superset) => superset.Except(subset).Any();
 
 		public static bool IsEqual<T>(this List<T> list1, List<T> list2) => list1.All(list2.Contains) && list1.Count == list2.Count;
+
 		#endregion
 
 		#region Math
+
 		public static string ToSI(this double d, IFormatProvider format = null)
 		{
-			char[] incPrefixes = { 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y' };
-			char[] decPrefixes = { 'm', '\u03bc', 'n', 'p', 'f', 'a', 'z', 'y' };
+			char[] incPrefixes = {'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
+			char[] decPrefixes = {'m', '\u03bc', 'n', 'p', 'f', 'a', 'z', 'y'};
 
 			if (Math.Abs(d) > 0.0)
 			{
-				int degree = (int)Math.Floor(Math.Log10(Math.Abs(d)) / 3);
+				int degree = (int) Math.Floor(Math.Log10(Math.Abs(d)) / 3);
 				double scaled = d * Math.Pow(1000, -degree);
 
 				char? prefix = null;
 				switch (Math.Sign(degree))
 				{
-					case 1: prefix = incPrefixes[degree - 1]; break;
-					case -1: prefix = decPrefixes[-degree - 1]; break;
+					case 1:
+						prefix = incPrefixes[degree - 1];
+						break;
+					case -1:
+						prefix = decPrefixes[-degree - 1];
+						break;
 				}
 
 				return scaled.ToString(format) + prefix;
@@ -393,9 +406,9 @@ namespace TheOneLibrary.Utility
 			return d.ToString(CultureInfo.InvariantCulture);
 		}
 
-		public static string ToSI(this float d, IFormatProvider format = null) => ToSI((double)d, format);
+		public static string ToSI(this float d, IFormatProvider format = null) => ToSI((double) d, format);
 
-		public static string ToSI(this long l, IFormatProvider format = null) => ToSI((double)l, format);
+		public static string ToSI(this long l, IFormatProvider format = null) => ToSI((double) l, format);
 
 		public static Point16 Min(this Point16 point, Point16 compareTo) => new Point16(point.X > compareTo.X ? compareTo.X : point.X, point.Y > compareTo.Y ? compareTo.Y : point.Y);
 
@@ -414,9 +427,11 @@ namespace TheOneLibrary.Utility
 			if (value > max) value = max;
 			return value;
 		}
+
 		#endregion
 
 		#region Other
+
 		public static bool PointInTriangle(Point point, Point t0, Point t1, Point t2)
 		{
 			var s = t0.Y * t2.X - t0.X * t2.Y + (t2.Y - t0.Y) * point.X + (t0.X - t2.X) * point.Y;
@@ -436,7 +451,7 @@ namespace TheOneLibrary.Utility
 
 		public static bool Contains(this Rectangle rectangle, Point16 point) => rectangle.Contains(point.X, point.Y);
 
-		public static bool Contains(this Rectangle rectangle, Vector2 vector) => rectangle.Contains((int)vector.X, (int)vector.Y);
+		public static bool Contains(this Rectangle rectangle, Vector2 vector) => rectangle.Contains((int) vector.X, (int) vector.Y);
 
 		public static string GetHotkeyValue(string hotkey)
 		{
@@ -477,7 +492,33 @@ namespace TheOneLibrary.Utility
 			return intList.Aggregate("", (current, i) => current + ("\\u832" + i));
 		}
 
+		public static void UnloadNullableTypes(this Mod mod)
+		{
+			foreach (Type type in mod.Code.GetTypes())
+			{
+				foreach (FieldInfo info in type.GetFields(defaultFlags))
+				{
+					if (!type.IsValueType && info.HasAttribute<NullAttribute>())
+					{
+						info.SetValue(null, null);
+						ErrorLogger.Log(type.FullName + ": " + info.Name);
+					}
+				}
+
+				foreach (PropertyInfo info in type.GetProperties(defaultFlags))
+				{
+					if (!type.IsValueType && info.HasAttribute<NullAttribute>())
+					{
+						info.SetValue(null, null);
+						ErrorLogger.Log(type.FullName + ": " + info.Name);
+					}
+				}
+			}
+		}
+
 		#endregion
+
+		public static ModHotKey Register(this Mod mod, string name, Keys key) => ModLoader.RegisterHotKey(mod, name, key.ToString());
 
 		public static void DrawMouseText()
 		{
@@ -511,13 +552,13 @@ namespace TheOneLibrary.Utility
 			Vector2 vector = Main.fontMouseText.MeasureString(MouseText);
 			if (hackedScreenHeight != -1 && hackedScreenWidth != -1)
 			{
-				if (num + vector.X + 4f > hackedScreenWidth) num = (int)(hackedScreenWidth - vector.X - 4f);
-				if (num2 + vector.Y + 4f > hackedScreenHeight) num2 = (int)(hackedScreenHeight - vector.Y - 4f);
+				if (num + vector.X + 4f > hackedScreenWidth) num = (int) (hackedScreenWidth - vector.X - 4f);
+				if (num2 + vector.Y + 4f > hackedScreenHeight) num2 = (int) (hackedScreenHeight - vector.Y - 4f);
 			}
 			else
 			{
-				if (num + vector.X + 4f > Main.screenWidth) num = (int)(Main.screenWidth - vector.X - 4f);
-				if (num2 + vector.Y + 4f > Main.screenHeight) num2 = (int)(Main.screenHeight - vector.Y - 4f);
+				if (num + vector.X + 4f > Main.screenWidth) num = (int) (Main.screenWidth - vector.X - 4f);
+				if (num2 + vector.Y + 4f > Main.screenHeight) num2 = (int) (Main.screenHeight - vector.Y - 4f);
 			}
 
 			Color baseColor = new Color(Main.mouseTextColor, Main.mouseTextColor, Main.mouseTextColor, Main.mouseTextColor);
@@ -525,6 +566,11 @@ namespace TheOneLibrary.Utility
 			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, Main.fontMouseText, MouseText, new Vector2(num, num2), baseColor, 0f, Vector2.Zero, Vector2.One);
 
 			MouseText = null;
+		}
+
+		public static void ModifyText(this TooltipLine line, string text)
+		{
+			line.text = text;
 		}
 
 		public static Vector2 Measure(this string text, DynamicSpriteFont font = null)

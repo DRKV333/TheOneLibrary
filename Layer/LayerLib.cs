@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -30,7 +30,7 @@ namespace TheOneLibrary.Layer
 			foreach (KeyValuePair<string, ILayer> layer in LayerManager.layers) layer.Value.Draw();
 
 			if (LayerManager.ActiveLayer != null && Vector2.Distance(Main.LocalPlayer.Center, Utility.Utility.MouseToWorldVector() * 16) <= 320f &&
-			LayerManager.ActiveLayer.GetInfo().DrawPreview) LayerManager.ActiveLayer.DrawPreview();
+			    LayerManager.ActiveLayer.GetInfo().DrawPreview) LayerManager.ActiveLayer.DrawPreview();
 
 			Main.spriteBatch.End();
 		}

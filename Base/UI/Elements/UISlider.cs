@@ -49,7 +49,7 @@ namespace TheOneLibrary.UI.Elements
 			sliderPos = MathHelper.Clamp(evt.MousePosition.X - dimensions.X, slider.Width / 2f + 2, dimensions.Width - slider.Width / 2f - 2);
 			sliderPos -= slider.Width / 2f;
 
-			currentValue = (int)((sliderPos - 2) * (maxValue / (dimensions.Width - 4 - slider.Width)));
+			currentValue = (int) ((sliderPos - 2) * (maxValue / (dimensions.Width - 4 - slider.Width)));
 
 			Recalculate();
 		}
@@ -69,14 +69,14 @@ namespace TheOneLibrary.UI.Elements
 					sliderPos = MathHelper.Clamp(Main.mouseX - dimensions.X, slider.Width / 2f + 2, dimensions.Width - slider.Width / 2f - 2);
 					sliderPos -= slider.Width / 2f;
 
-					currentValue = (int)((sliderPos - 2) * (maxValue / (dimensions.Width - 4 - slider.Width)));
+					currentValue = (int) ((sliderPos - 2) * (maxValue / (dimensions.Width - 4 - slider.Width)));
 
 					Recalculate();
 				}
 
 				spriteBatch.Draw(slider, dimensions.Position() + new Vector2(sliderPos, dimensions.Height / 2 - slider.Height / 2f), Color.White);
 
-				Rectangle sliderRect = new Rectangle((int)(dimensions.X + sliderPos), (int)(dimensions.Y + dimensions.Height / 2 - slider.Height / 2f), slider.Width, slider.Height);
+				Rectangle sliderRect = new Rectangle((int) (dimensions.X + sliderPos), (int) (dimensions.Y + dimensions.Height / 2 - slider.Height / 2f), slider.Width, slider.Height);
 				if (IsMouseHovering && sliderRect.Contains(Main.mouseX, Main.mouseY))
 				{
 					Main.LocalPlayer.showItemIcon = false;

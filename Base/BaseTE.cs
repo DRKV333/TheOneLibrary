@@ -19,7 +19,6 @@ namespace TheOneLibrary.Base
 
 		public virtual void OnPlace()
 		{
-
 		}
 
 		public override void OnNetPlace() => OnPlace();
@@ -29,10 +28,10 @@ namespace TheOneLibrary.Base
 			ModTileEntity modTileEntity = ConstructFromBase(this);
 			modTileEntity.Position = new Point16(i, j);
 			modTileEntity.ID = AssignNewID();
-			modTileEntity.type = (byte)Type;
+			modTileEntity.type = (byte) Type;
 			ByID[modTileEntity.ID] = modTileEntity;
 			ByPosition[modTileEntity.Position] = modTileEntity;
-			((BaseTE)modTileEntity).OnPlace();
+			((BaseTE) modTileEntity).OnPlace();
 			return modTileEntity.ID;
 		}
 	}

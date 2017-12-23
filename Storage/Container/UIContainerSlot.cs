@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -18,8 +18,8 @@ namespace TheOneLibrary.UI.Elements
 		public IContainer Container;
 		public int slot;
 
-		///	<summary> 
-		/// Current item, mouse item.
+		/// <summary>
+		///     Current item, mouse item.
 		/// </summary>
 		public event Func<Item, Item, bool> CanInteract;
 
@@ -108,7 +108,7 @@ namespace TheOneLibrary.UI.Elements
 			if (Container is IContainerItem) NetHelper.SyncEntity(MessageID.SyncItem, slot);
 		}
 
-		public override int CompareTo(object obj) => slot.CompareTo(((UIContainerSlot)obj).slot);
+		public override int CompareTo(object obj) => slot.CompareTo(((UIContainerSlot) obj).slot);
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{

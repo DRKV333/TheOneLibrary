@@ -2,7 +2,7 @@
 {
 	public class Lava : ModFluid
 	{
-		public override string Texture => TheOneLibrary.PlaceholderTexture;
+		public override string Texture => TheOneLibrary.TexturePath + "Fluid/Lava";
 
 		public override void SetDefaults()
 		{

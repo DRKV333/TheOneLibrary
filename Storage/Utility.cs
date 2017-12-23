@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader.IO;
 using TheOneLibrary.Storage;
@@ -10,7 +10,7 @@ namespace TheOneLibrary.Utility
 {
 	public static partial class Utility
 	{
-		public static TagCompound Save(this IList<Item> items) => new TagCompound { ["Items"] = items.Select(ItemIO.Save).ToList() };
+		public static TagCompound Save(this IList<Item> items) => new TagCompound {["Items"] = items.Select(ItemIO.Save).ToList()};
 
 		public static IList<Item> Load(TagCompound tag) => tag["Items"] is List<TagCompound> ? tag.GetList<Item>("Items") : tag.GetCompound("Items").GetList<Item>("Items").ToList();
 

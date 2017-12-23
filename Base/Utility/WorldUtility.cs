@@ -9,9 +9,9 @@ namespace TheOneLibrary.Utility
 {
 	public static partial class Utility
 	{
-		public static Vector2 MouseToWorldVector() => new Vector2((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
+		public static Vector2 MouseToWorldVector() => new Vector2((int) (Main.MouseWorld.X / 16), (int) (Main.MouseWorld.Y / 16));
 
-		public static Point16 MouseToWorldPoint() => new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
+		public static Point16 MouseToWorldPoint() => new Point16((int) (Main.MouseWorld.X / 16), (int) (Main.MouseWorld.Y / 16));
 
 		public static bool AnyTowerLiving => NPC.TowerActiveNebula || NPC.TowerActiveSolar || NPC.TowerActiveStardust || NPC.TowerActiveVortex;
 
@@ -30,6 +30,7 @@ namespace TheOneLibrary.Utility
 		}
 
 		#region Tracing
+
 		public static List<Point16> CheckNeighbours(int width = 1, int height = 1)
 		{
 			List<Point16> list = new List<Point16>();
@@ -81,6 +82,7 @@ namespace TheOneLibrary.Utility
 				}
 			}
 		}
+
 		#endregion
 	}
 }

@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.ModLoader;
 
 namespace TheOneLibrary.Fluid
@@ -10,7 +11,7 @@ namespace TheOneLibrary.Fluid
 		public static IDictionary<string, ModFluid> fluidNames;
 		public static IList<ModFluid> fluids;
 		public static IList<Texture2D> fluidTexture = new List<Texture2D>();
-		public static int NextFluidID = 0;
+		public static int NextFluidID = 3;
 
 		static FluidLoader()
 		{
@@ -21,10 +22,6 @@ namespace TheOneLibrary.Fluid
 		public static ModFluid GetFluid(int type) => fluids[type] != null ? fluids[type] : null;
 
 		public static ModFluid GetFluid(string name) => fluidNames.ContainsKey(name) ? fluidNames[name] : null;
-
-		public static ModFluid GetNewInstance(string name) => fluidNames.ContainsKey(name) ? fluidNames[name].NewInstance() : null;
-
-		public static ModFluid GetNewInstance(int type) => fluids[type] != null ? fluids[type].NewInstance() : null;
 
 		public static int FluidType(string name)
 		{
@@ -42,7 +39,10 @@ namespace TheOneLibrary.Fluid
 				{
 					foreach (Type type in mod.Code.GetTypes())
 					{
-						if (!type.IsAbstract && type.IsSubclassOf(typeof(ModFluid))) AutoloadFluid(type, mod);
+						if (!type.IsAbstract && type.IsSubclassOf(typeof(ModFluid)))
+						{
+							AutoloadFluid(type, mod);
+						}
 					}
 				}
 			}
@@ -82,8 +82,27 @@ namespace TheOneLibrary.Fluid
 
 		public static void AddFluid(string name, ModFluid fluid)
 		{
-			fluid.type = NextFluid();
+			int type;
+
+			switch (name)
+			{
+				case "Water":
+					type = 0;
+					break;
+				case "Lava":
+					type = 1;
+					break;
+				case "Honey":
+					type = 2;
+					break;
+				default:
+					type = NextFluid();
+					break;
+			}
+
+			fluid.type = type;
 			fluid.Name = name;
+
 			fluidNames[name] = fluid;
 			fluids.Add(fluid);
 		}
