@@ -6,7 +6,6 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using TheOneLibrary.Base.Items;
-using TheOneLibrary.Fluid.VanillaFluids;
 using TheOneLibrary.Utility;
 
 namespace TheOneLibrary.Fluid
@@ -50,7 +49,9 @@ namespace TheOneLibrary.Fluid
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			tooltips.FirstOrDefault(x => x.mod == "Terraria" && x.Name == "ItemName")?.ModifyText(fluid == null ? "Empty Bucket" : $"{fluid.DisplayName.GetDefault()} Bucket");
+			string itemName = fluid == null ? "Empty Bucket" : $"{fluid.DisplayName.GetDefault()} Bucket";
+			tooltips.FirstOrDefault(x => x.mod == "Terraria" && x.Name == "ItemName")?.ModifyText(itemName);
+			item.SetNameOverride(itemName);
 
 			if (fluid != null)
 			{
@@ -76,9 +77,9 @@ namespace TheOneLibrary.Fluid
 
 				Rectangle prevRect = spriteBatch.GraphicsDevice.ScissorRectangle;
 				float progress = fluid.volume / (float)MaxAmount;
-				Main.NewText(progress);
-				spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle((int)((int)position.X + 10*scale), (int)(position.Y + (20 * scale - (int)(10 * scale * progress))), (int)(4 * scale), (int)(10 * scale * progress));
-
+				Main.NewText(position);
+				Main.NewText(scale);
+				spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle((int)(position.X + 10 * scale), (int)(position.Y + 20 * scale - 10 * scale * progress), 4, (int)(10 * progress));
 
 				spriteBatch.Draw(ModLoader.GetTexture(fluid.Texture), position + new Vector2(10, 10) * scale, new Rectangle(0, 0, 4, 10), Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
 
@@ -97,17 +98,21 @@ namespace TheOneLibrary.Fluid
 			}
 
 			Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
-			if (fluid == null && tile.liquidType() == Tile.Liquid_Water && tile.liquid > 0)
+			if ((fluid == null || fluid.type == tile.liquidType()) && tile.liquid > 0)
 			{
 				Main.PlaySound(19, (int)player.position.X, (int)player.position.Y);
 
-				fluid = Utility.Utility.SetDefaults(FluidLoader.FluidType<Water>());
+				if (fluid == null) fluid = Utility.Utility.SetDefaults(tile.liquidType());
 				int drain = System.Math.Min(tile.liquid, MaxAmount - fluid.volume);
 				fluid.volume += drain;
 
 				tile.liquid -= (byte)drain;
-				tile.lava(false);
-				tile.honey(false);
+
+				if (tile.liquid <= 0)
+				{
+					tile.lava(false);
+					tile.honey(false);
+				}
 
 				WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY, false);
 				if (Main.netMode == 1) NetMessage.sendWater(Player.tileTargetX, Player.tileTargetY);
@@ -189,10 +194,10 @@ namespace TheOneLibrary.Fluid
 						}
 					}
 				}
+				*/
 
-			Placing
-
-			else if (Main.tile[Player.tileTargetX, Player.tileTargetY].liquid < 200 && (!Main.tile[Player.tileTargetX, Player.tileTargetY].nactive() || !Main.tileSolid[Main.tile[Player.tileTargetX, Player.tileTargetY].type] || Main.tileSolidTop[Main.tile[Player.tileTargetX, Player.tileTargetY].type]))
+			#region Placing
+			/*else if (Main.tile[Player.tileTargetX, Player.tileTargetY].liquid < 200 && (!Main.tile[Player.tileTargetX, Player.tileTargetY].nactive() || !Main.tileSolid[Main.tile[Player.tileTargetX, Player.tileTargetY].type] || Main.tileSolidTop[Main.tile[Player.tileTargetX, Player.tileTargetY].type]))
 			{
 				if (item.type == 207)
 				{
@@ -247,18 +252,28 @@ namespace TheOneLibrary.Fluid
 				}
 			}
 		}*/
+			#endregion
 
 			return true;
 		}
-		/*
-		public override TagCompound Save() => new TagCompound
+
+		public override TagCompound Save()
 		{
-			["Fluid"] = fluid
-		};
+			return fluid != null ? new TagCompound
+			{
+				["Type"] = fluid.Name,
+				["Volume"] = fluid.volume
+			} : null;
+		}
 
 		public override void Load(TagCompound tag)
 		{
-			fluid = tag.Get<ModFluid>("Fluid");
-		}*/
+			if (tag != null)
+			{
+				ModFluid f = FluidLoader.GetFluid(tag.GetString("Type")).NewInstance();
+				f.volume = tag.GetInt("Volume");
+				fluid = f;
+			}
+		}
 	}
 }
