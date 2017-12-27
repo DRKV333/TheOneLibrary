@@ -1,9 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.Graphics;
@@ -65,7 +65,7 @@ namespace TheOneLibrary
 
 			FluidLoader.Autoload();
 			FluidLoader.SetupContent();
-			
+
 			Main.OnPostDraw += Draw;
 
 			if (!Main.dedServ)
@@ -156,6 +156,31 @@ namespace TheOneLibrary
 		public static void RedundantFunc()
 		{
 			var something = Enumerable.Range(1, 10);
+		}
+	}
+
+	public class TOLPlayer : ModPlayer
+	{
+		public override void PreUpdate()
+		{
+			if (!Main.mapFullscreen)
+			{
+				int myX = Player.tileTargetX;
+				int myY = Player.tileTargetY;
+				if (player.position.X / 16f - Player.tileRangeX <= myX && (player.position.X + player.width) / 16f + Player.tileRangeX - 1f >= myX && player.position.Y / 16f - Player.tileRangeY <= myY && (player.position.Y + player.height) / 16f + Player.tileRangeY - 2f >= myY)
+				{
+					if (Main.mouseLeft && Main.mouseLeftRelease)
+					{
+						if (Main.tile[myX, myY] == null) Main.tile[myX, myY] = new Tile();
+						if (Main.tile[myX, myY].active())
+						{
+							int type = Main.tile[myX, myY].type;
+							ModTile tile = TileLoader.GetTile(type);
+							(tile as BaseTile)?.LeftClick(myX, myY);
+						}
+					}
+				}
+			}
 		}
 	}
 }

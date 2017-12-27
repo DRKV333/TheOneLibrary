@@ -19,15 +19,15 @@ namespace TheOneLibrary.Fluid
 			fluids = new List<ModFluid>();
 		}
 
-		public static ModFluid GetFluid(int type) => fluids[type] != null ? fluids[type] : null;
-
-		public static ModFluid GetFluid(string name) => fluidNames.ContainsKey(name) ? fluidNames[name] : null;
-
-		public static int FluidType(string name)
+		public static ModFluid GetFluid(string name)
 		{
-			ModFluid fluid = GetFluid(name);
-			return fluid.type;
+			ModFluid item;
+			return fluidNames.TryGetValue(name, out item) ? item : null;
 		}
+		
+		public static T GetFluid<T>() where T : ModFluid => (T)GetFluid(typeof(T).Name);
+		
+		public static int FluidType(string name)=>GetFluid(name)?.type ?? 0;
 
 		public static int FluidType<T>() where T : ModFluid => FluidType(typeof(T).Name);
 

@@ -25,8 +25,6 @@ namespace TheOneLibrary.Fluid
 
 		public ModFluid fluid;
 
-		//public int liquidType = -1;
-		//public int liquidAmount;
 		public const int MaxAmount = 2040;
 
 		public override void SetStaticDefaults()
@@ -50,20 +48,11 @@ namespace TheOneLibrary.Fluid
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			string itemName = fluid == null ? "Empty Bucket" : $"{fluid.DisplayName.GetDefault()} Bucket";
-			tooltips.FirstOrDefault(x => x.mod == "Terraria" && x.Name == "ItemName")?.ModifyText(itemName);
+			//tooltips.FirstOrDefault(x => x.mod == "Terraria" && x.Name == "ItemName")?.ModifyText(itemName);
 			item.SetNameOverride(itemName);
 
-			if (fluid != null)
-			{
-				tooltips.Insert(1, new TooltipLine(mod, "BucketAmount", $"Volume: {fluid.volume}/{MaxAmount}"));
-			}
+			if (fluid != null) tooltips.Insert(1, new TooltipLine(mod, "BucketAmount", $"Volume: {fluid.volume}/{MaxAmount}"));
 		}
-
-		//public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-		//{
-
-		//	return true;
-		//}
 
 		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
@@ -77,8 +66,7 @@ namespace TheOneLibrary.Fluid
 
 				Rectangle prevRect = spriteBatch.GraphicsDevice.ScissorRectangle;
 				float progress = fluid.volume / (float)MaxAmount;
-				Main.NewText(position);
-				Main.NewText(scale);
+
 				spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle((int)(position.X + 10 * scale), (int)(position.Y + 20 * scale - 10 * scale * progress), 4, (int)(10 * progress));
 
 				spriteBatch.Draw(ModLoader.GetTexture(fluid.Texture), position + new Vector2(10, 10) * scale, new Rectangle(0, 0, 4, 10), Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
@@ -102,7 +90,11 @@ namespace TheOneLibrary.Fluid
 			{
 				Main.PlaySound(19, (int)player.position.X, (int)player.position.Y);
 
-				if (fluid == null) fluid = Utility.Utility.SetDefaults(tile.liquidType());
+				if (fluid == null)
+				{
+					fluid = Utility.Utility.SetDefaults(tile.liquidType());
+					item.SetNameOverride(fluid == null ? "Empty Bucket" : $"{fluid.DisplayName.GetDefault()} Bucket");
+				}
 				int drain = System.Math.Min(tile.liquid, MaxAmount - fluid.volume);
 				fluid.volume += drain;
 
@@ -262,7 +254,8 @@ namespace TheOneLibrary.Fluid
 			return fluid != null ? new TagCompound
 			{
 				["Type"] = fluid.Name,
-				["Volume"] = fluid.volume
+				["Volume"] = fluid.volume,
+				["Name"] = item.HoverName
 			} : null;
 		}
 
@@ -273,6 +266,7 @@ namespace TheOneLibrary.Fluid
 				ModFluid f = FluidLoader.GetFluid(tag.GetString("Type")).NewInstance();
 				f.volume = tag.GetInt("Volume");
 				fluid = f;
+				item.SetNameOverride(tag.GetString("Name"));
 			}
 		}
 	}

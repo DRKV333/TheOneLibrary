@@ -45,15 +45,15 @@ namespace TheOneLibrary.Recipe
 
 		public void AddIngredient(ModItem item, int stack = 1, int slot = -1) => AddIngredient(item.item.type, stack, slot);
 
-		public void AddFluid(int fluidID, int volume = 1, int tanks = -1)
+		public void AddFluid(string fluid, int volume = 1, int tanks = -1)
 		{
-			ModFluid fluid = FluidLoader.GetFluid(fluidID).NewInstance();
-			fluid.volume = volume;
-			if (tanks == -1) requiredFluids.Add(fluid);
-			else requiredFluids[tanks] = fluid;
+			ModFluid modFluid = FluidLoader.GetFluid(fluid).NewInstance();
+			modFluid.volume = volume;
+			if (tanks == -1) requiredFluids.Add(modFluid);
+			else requiredFluids[tanks] = modFluid;
 		}
 
-		public void AddFluid(ModFluid fluid, int volume = 1, int tanks = -1) => AddFluid(fluid.type, volume, tanks);
+		public void AddFluid(ModFluid fluid, int volume = 1, int tanks = -1) => AddFluid(fluid.Name, volume, tanks);
 
 		public void AddTile(int tileID)
 		{

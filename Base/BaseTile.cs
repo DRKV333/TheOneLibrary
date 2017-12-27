@@ -1,4 +1,5 @@
-﻿using Terraria.ModLoader;
+﻿using Terraria;
+using Terraria.ModLoader;
 
 namespace TheOneLibrary.Base
 {
@@ -10,6 +11,11 @@ namespace TheOneLibrary.Base
 		{
 			texture = Texture;
 			return base.Autoload(ref name, ref texture);
+		}
+		
+		public virtual void LeftClick(int i, int j)
+		{
+			
 		}
 	}
 }
