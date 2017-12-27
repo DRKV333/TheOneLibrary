@@ -1,12 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using TheOneLibrary.Base.Items;
-using TheOneLibrary.Utility;
 
 namespace TheOneLibrary.Fluid
 {
@@ -38,7 +38,7 @@ namespace TheOneLibrary.Fluid
 			item.useStyle = 1;
 			item.useTurn = true;
 			item.useAnimation = 15;
-			item.useTime = 10;
+			item.useTime = 15;
 			item.width = 20;
 			item.height = 20;
 			item.maxStack = 1;
@@ -47,10 +47,6 @@ namespace TheOneLibrary.Fluid
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			string itemName = fluid == null ? "Empty Bucket" : $"{fluid.DisplayName.GetDefault()} Bucket";
-			//tooltips.FirstOrDefault(x => x.mod == "Terraria" && x.Name == "ItemName")?.ModifyText(itemName);
-			item.SetNameOverride(itemName);
-
 			if (fluid != null) tooltips.Insert(1, new TooltipLine(mod, "BucketAmount", $"Volume: {fluid.volume}/{MaxAmount}"));
 		}
 
@@ -77,38 +73,75 @@ namespace TheOneLibrary.Fluid
 			}
 		}
 
+		public override bool AltFunctionUse(Player player)
+		{
+			return true;
+		}
+
 		public override bool UseItem(Player player)
 		{
-			if (!Main.GamepadDisableCursorItemIcon)
+			if (player.altFunctionUse == 2)
 			{
-				player.showItemIcon = true;
-				Main.ItemIconCacheUpdate(item.type);
+				if (fluid != null)
+				{
+					Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
+					if (!tile.nactive() || !Main.tileSolid[tile.type] || Main.tileSolidTop[tile.type])
+					{
+						if (tile.liquid == 0 || tile.liquidType() == fluid.type)
+						{
+							Main.PlaySound(19, (int)player.position.X, (int)player.position.Y);
+
+							if (tile.liquid == 0) tile.liquidType(fluid.type);
+
+							int volume = Math.Min(fluid.volume, 255 - tile.liquid);
+							tile.liquid += (byte)volume;
+							fluid.volume -= volume;
+							if (fluid.volume == 0)
+							{
+								fluid = null;
+								item.SetNameOverride("Empty Bucket");
+							}
+
+							WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY);
+
+							if (Main.netMode == 1) NetMessage.sendWater(Player.tileTargetX, Player.tileTargetY);
+						}
+					}
+				}
 			}
-
-			Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
-			if ((fluid == null || fluid.type == tile.liquidType()) && tile.liquid > 0)
+			else
 			{
-				Main.PlaySound(19, (int)player.position.X, (int)player.position.Y);
-
-				if (fluid == null)
+				if (!Main.GamepadDisableCursorItemIcon)
 				{
-					fluid = Utility.Utility.SetDefaults(tile.liquidType());
-					item.SetNameOverride(fluid == null ? "Empty Bucket" : $"{fluid.DisplayName.GetDefault()} Bucket");
-				}
-				int drain = System.Math.Min(tile.liquid, MaxAmount - fluid.volume);
-				fluid.volume += drain;
-
-				tile.liquid -= (byte)drain;
-
-				if (tile.liquid <= 0)
-				{
-					tile.lava(false);
-					tile.honey(false);
+					player.showItemIcon = true;
+					Main.ItemIconCacheUpdate(item.type);
 				}
 
-				WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY, false);
-				if (Main.netMode == 1) NetMessage.sendWater(Player.tileTargetX, Player.tileTargetY);
-				else Liquid.AddWater(Player.tileTargetX, Player.tileTargetY);
+				Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
+				if ((fluid == null || fluid.type == tile.liquidType()) && tile.liquid > 0)
+				{
+					Main.PlaySound(19, (int)player.position.X, (int)player.position.Y);
+
+					if (fluid == null)
+					{
+						fluid = Utility.Utility.SetDefaults(tile.liquidType());
+						item.SetNameOverride(fluid.DisplayName.GetTranslation(Language.ActiveCulture) + " Bucket");
+					}
+					int drain = Math.Min(tile.liquid, MaxAmount - fluid.volume);
+					fluid.volume += drain;
+
+					tile.liquid -= (byte)drain;
+
+					if (tile.liquid <= 0)
+					{
+						tile.lava(false);
+						tile.honey(false);
+					}
+
+					WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY, false);
+					if (Main.netMode == 1) NetMessage.sendWater(Player.tileTargetX, Player.tileTargetY);
+					else Liquid.AddWater(Player.tileTargetX, Player.tileTargetY);
+				}
 			}
 
 			/*if (player.itemTime == 0 && player.itemAnimation > 0 && player.controlUseItem)
@@ -188,75 +221,18 @@ namespace TheOneLibrary.Fluid
 				}
 				*/
 
-			#region Placing
-			/*else if (Main.tile[Player.tileTargetX, Player.tileTargetY].liquid < 200 && (!Main.tile[Player.tileTargetX, Player.tileTargetY].nactive() || !Main.tileSolid[Main.tile[Player.tileTargetX, Player.tileTargetY].type] || Main.tileSolidTop[Main.tile[Player.tileTargetX, Player.tileTargetY].type]))
-			{
-				if (item.type == 207)
-				{
-					if (Main.tile[Player.tileTargetX, Player.tileTargetY].liquid == 0 || Main.tile[Player.tileTargetX, Player.tileTargetY].liquidType() == 1)
-					{
-						Main.PlaySound(19, (int)this.position.X, (int)this.position.Y, 1, 1f, 0f);
-						Main.tile[Player.tileTargetX, Player.tileTargetY].liquidType(1);
-						Main.tile[Player.tileTargetX, Player.tileTargetY].liquid = 255;
-						WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY, true);
-						item.stack--;
-						this.PutItemInInventory(205, this.selectedItem);
-						this.itemTime = (int)(item.useTime / PlayerHooks.TotalUseTimeMultiplier(this, item));
-						if (Main.netMode == 1)
-						{
-							NetMessage.sendWater(Player.tileTargetX, Player.tileTargetY);
-						}
-					}
-				}
-				else if (item.type == 206 || item.type == 3031)
-				{
-					if (Main.tile[Player.tileTargetX, Player.tileTargetY].liquid == 0 || Main.tile[Player.tileTargetX, Player.tileTargetY].liquidType() == 0)
-					{
-						Main.PlaySound(19, (int)this.position.X, (int)this.position.Y, 1, 1f, 0f);
-						Main.tile[Player.tileTargetX, Player.tileTargetY].liquidType(0);
-						Main.tile[Player.tileTargetX, Player.tileTargetY].liquid = 255;
-						WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY, true);
-						if (item.type != 3031)
-						{
-							item.stack--;
-							this.PutItemInInventory(205, this.selectedItem);
-						}
-						this.itemTime = (int)(item.useTime / PlayerHooks.TotalUseTimeMultiplier(this, item));
-						if (Main.netMode == 1)
-						{
-							NetMessage.sendWater(Player.tileTargetX, Player.tileTargetY);
-						}
-					}
-				}
-				else if (item.type == 1128 && (Main.tile[Player.tileTargetX, Player.tileTargetY].liquid == 0 || Main.tile[Player.tileTargetX, Player.tileTargetY].liquidType() == 2))
-				{
-					Main.PlaySound(19, (int)this.position.X, (int)this.position.Y, 1, 1f, 0f);
-					Main.tile[Player.tileTargetX, Player.tileTargetY].liquidType(2);
-					Main.tile[Player.tileTargetX, Player.tileTargetY].liquid = 255;
-					WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY, true);
-					item.stack--;
-					this.PutItemInInventory(205, this.selectedItem);
-					this.itemTime = (int)(item.useTime / PlayerHooks.TotalUseTimeMultiplier(this, item));
-					if (Main.netMode == 1)
-					{
-						NetMessage.sendWater(Player.tileTargetX, Player.tileTargetY);
-					}
-				}
-			}
-		}*/
-			#endregion
-
 			return true;
 		}
 
 		public override TagCompound Save()
 		{
-			return fluid != null ? new TagCompound
-			{
-				["Type"] = fluid.Name,
-				["Volume"] = fluid.volume,
-				["Name"] = item.HoverName
-			} : null;
+			return fluid != null
+				? new TagCompound
+				{
+					["Type"] = fluid.Name,
+					["Volume"] = fluid.volume
+				}
+				: null;
 		}
 
 		public override void Load(TagCompound tag)
@@ -266,7 +242,7 @@ namespace TheOneLibrary.Fluid
 				ModFluid f = FluidLoader.GetFluid(tag.GetString("Type")).NewInstance();
 				f.volume = tag.GetInt("Volume");
 				fluid = f;
-				item.SetNameOverride(tag.GetString("Name"));
+				item.SetNameOverride(fluid.DisplayName.GetTranslation(Language.ActiveCulture) + " Bucket");
 			}
 		}
 	}

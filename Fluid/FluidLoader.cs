@@ -1,7 +1,6 @@
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
 
 namespace TheOneLibrary.Fluid
@@ -24,10 +23,10 @@ namespace TheOneLibrary.Fluid
 			ModFluid item;
 			return fluidNames.TryGetValue(name, out item) ? item : null;
 		}
-		
+
 		public static T GetFluid<T>() where T : ModFluid => (T)GetFluid(typeof(T).Name);
-		
-		public static int FluidType(string name)=>GetFluid(name)?.type ?? 0;
+
+		public static int FluidType(string name) => GetFluid(name)?.type ?? 0;
 
 		public static int FluidType<T>() where T : ModFluid => FluidType(typeof(T).Name);
 

@@ -46,7 +46,7 @@ namespace TheOneLibrary.UI.Elements
 
 		public override int CompareTo(object obj)
 		{
-			UIItemSlot other = (UIItemSlot) obj;
+			UIItemSlot other = (UIItemSlot)obj;
 			return other != null ? slotID.CompareTo(other.slotID) : 0;
 		}
 

@@ -23,12 +23,12 @@ namespace TheOneLibrary.UI.Elements
 			spriteBatch.Draw(TheOneLibrary.corner, dimensions.Position() + new Vector2(12, dimensions.Height - 12), null, color, MathHelper.Pi * 1.5f, new Vector2(12, 12), Vector2.One, SpriteEffects.None, 0f);
 			spriteBatch.Draw(TheOneLibrary.corner, dimensions.Position() + new Vector2(dimensions.Width - 12, dimensions.Height - 12), null, color, MathHelper.Pi * 1f, new Vector2(12, 12), Vector2.One, SpriteEffects.None, 0f);
 
-			spriteBatch.Draw(TheOneLibrary.side, new Rectangle((int) (dimensions.X + 12), (int) dimensions.Y, (int) (dimensions.Width - 24), 12), color);
-			spriteBatch.Draw(TheOneLibrary.side, new Rectangle((int) dimensions.X, (int) (dimensions.Y + dimensions.Height - 12), (int) (dimensions.Height - 24), 12), null, color, MathHelper.Pi * 1.5f, Vector2.Zero, SpriteEffects.None, 0f);
-			spriteBatch.Draw(TheOneLibrary.side, new Rectangle((int) (dimensions.X + dimensions.Width), (int) (dimensions.Y + 12), (int) (dimensions.Height - 24), 12), null, color, MathHelper.Pi * 0.5f, Vector2.Zero, SpriteEffects.None, 0f);
-			spriteBatch.Draw(TheOneLibrary.side, new Rectangle((int) (dimensions.X + dimensions.Width - 12), (int) (dimensions.Y + dimensions.Height), (int) (dimensions.Width - 24), 12), null, color, MathHelper.Pi, Vector2.Zero, SpriteEffects.None, 0f);
+			spriteBatch.Draw(TheOneLibrary.side, new Rectangle((int)(dimensions.X + 12), (int)dimensions.Y, (int)(dimensions.Width - 24), 12), color);
+			spriteBatch.Draw(TheOneLibrary.side, new Rectangle((int)dimensions.X, (int)(dimensions.Y + dimensions.Height - 12), (int)(dimensions.Height - 24), 12), null, color, MathHelper.Pi * 1.5f, Vector2.Zero, SpriteEffects.None, 0f);
+			spriteBatch.Draw(TheOneLibrary.side, new Rectangle((int)(dimensions.X + dimensions.Width), (int)(dimensions.Y + 12), (int)(dimensions.Height - 24), 12), null, color, MathHelper.Pi * 0.5f, Vector2.Zero, SpriteEffects.None, 0f);
+			spriteBatch.Draw(TheOneLibrary.side, new Rectangle((int)(dimensions.X + dimensions.Width - 12), (int)(dimensions.Y + dimensions.Height), (int)(dimensions.Width - 24), 12), null, color, MathHelper.Pi, Vector2.Zero, SpriteEffects.None, 0f);
 
-			spriteBatch.Draw(Main.magicPixel, new Rectangle((int) (dimensions.X + 12), (int) (dimensions.Y + 12), (int) (dimensions.Width - 24), (int) (dimensions.Height - 24)), color);
+			spriteBatch.Draw(Main.magicPixel, new Rectangle((int)(dimensions.X + 12), (int)(dimensions.Y + 12), (int)(dimensions.Width - 24), (int)(dimensions.Height - 24)), color);
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -37,7 +37,7 @@ namespace TheOneLibrary.UI.Elements
 
 			long delta = heat.GetHeat() - oldHeat;
 			oldHeat = heat.GetHeat();
-			float progress = heat.GetHeat() / (float) heat.GetCapacity();
+			float progress = heat.GetHeat() / (float)heat.GetCapacity();
 
 			DrawBar(spriteBatch, bgColor);
 
@@ -48,7 +48,7 @@ namespace TheOneLibrary.UI.Elements
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, state);
 
 			Rectangle prevRect = spriteBatch.GraphicsDevice.ScissorRectangle;
-			spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle((int) dimensions.X, (int) (dimensions.Y + dimensions.Height - dimensions.Height * progress), (int) dimensions.Width, (int) (dimensions.Height * progress));
+			spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle((int)dimensions.X, (int)(dimensions.Y + dimensions.Height - dimensions.Height * progress), (int)dimensions.Width, (int)(dimensions.Height * progress));
 
 			DrawBar(spriteBatch, barColor);
 

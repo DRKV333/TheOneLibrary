@@ -53,15 +53,15 @@ namespace TheOneLibrary.UI.Elements
 		{
 			CalculatedStyle dimensions = GetDimensions();
 
-			int x = (int) (Main.mouseX - dimensions.X);
-			int y = (int) (Main.mouseY - dimensions.Y);
+			int x = (int)(Main.mouseX - dimensions.X);
+			int y = (int)(Main.mouseY - dimensions.Y);
 
 			Color[] data = new Color[gradTexture.Width * gradTexture.Height];
 			gradTexture.GetData(data);
 
 			Vector2 scale = new Vector2(dimensions.Width / gradTexture.Width, dimensions.Height / gradTexture.Height);
 
-			return data[(int) (y / scale.Y) * gradTexture.Width + (int) (x / scale.X)];
+			return data[(int)(y / scale.Y) * gradTexture.Width + (int)(x / scale.X)];
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)

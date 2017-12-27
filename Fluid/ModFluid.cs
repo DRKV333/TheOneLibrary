@@ -15,7 +15,7 @@ namespace TheOneLibrary.Fluid
 
 		public Mod mod { get; internal set; }
 
-		public virtual ModFluid Clone() => (ModFluid) MemberwiseClone();
+		public virtual ModFluid Clone() => (ModFluid)MemberwiseClone();
 
 		public virtual string Texture => (GetType().Namespace + "." + Name).Replace('.', '/');
 
@@ -36,7 +36,7 @@ namespace TheOneLibrary.Fluid
 
 		public virtual ModFluid NewInstance()
 		{
-			var copy = (ModFluid) MemberwiseClone();
+			var copy = (ModFluid)MemberwiseClone();
 			return copy;
 		}
 	}

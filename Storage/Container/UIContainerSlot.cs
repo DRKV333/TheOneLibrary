@@ -108,7 +108,7 @@ namespace TheOneLibrary.UI.Elements
 			if (Container is IContainerItem) NetHelper.SyncEntity(MessageID.SyncItem, slot);
 		}
 
-		public override int CompareTo(object obj) => slot.CompareTo(((UIContainerSlot) obj).slot);
+		public override int CompareTo(object obj) => slot.CompareTo(((UIContainerSlot)obj).slot);
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{

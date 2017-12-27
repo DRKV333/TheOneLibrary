@@ -34,7 +34,7 @@ namespace TheOneLibrary.UI.Elements
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
 			CalculatedStyle dimensions = GetDimensions();
-			spriteBatch.Draw(texture, new Rectangle((int) dimensions.X, (int) dimensions.Y, (int) dimensions.Width, (int) dimensions.Height), new Rectangle(width * frameX, height * frameY, width, height), color * opacity);
+			spriteBatch.Draw(texture, new Rectangle((int)dimensions.X, (int)dimensions.Y, (int)dimensions.Width, (int)dimensions.Height), new Rectangle(width * frameX, height * frameY, width, height), color * opacity);
 
 			if (IsMouseHovering && !string.IsNullOrWhiteSpace(Text))
 			{

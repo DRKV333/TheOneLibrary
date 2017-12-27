@@ -10,7 +10,7 @@ namespace TheOneLibrary.Base
 	{
 		public static void HandlePacket(BinaryReader reader, int sender)
 		{
-			MessageType type = (MessageType) reader.ReadByte();
+			MessageType type = (MessageType)reader.ReadByte();
 			if (type == MessageType.ClientSendTEUpdate) ReceiveClientSendTEUpdate(reader, sender);
 		}
 
@@ -25,7 +25,7 @@ namespace TheOneLibrary.Base
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
 				ModPacket packet = mod.GetPacket();
-				packet.Write((byte) MessageType.ClientSendTEUpdate);
+				packet.Write((byte)MessageType.ClientSendTEUpdate);
 				packet.Write(ID);
 				TileEntity.Write(packet, TileEntity.ByID[ID], true);
 				packet.Send();
