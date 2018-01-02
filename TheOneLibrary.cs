@@ -23,7 +23,7 @@ namespace TheOneLibrary
 	public class TheOneLibrary : Mod
 	{
 		[Null] public static TheOneLibrary Instance;
-		[Null] public static TOLConfig Config;
+		//[Null] public static TOLConfig Config;
 
 		public const string TexturePath = "TheOneLibrary/Textures/";
 		public const string PlaceholderTexture = TexturePath + "Placeholder";
@@ -58,7 +58,7 @@ namespace TheOneLibrary
 
 			corner = ModLoader.GetTexture(TexturePath + "BarCorner");
 			side = ModLoader.GetTexture(TexturePath + "BarSide");
-
+			
 			TagSerializer.AddSerializer(new EnergySerializer());
 			TagSerializer.AddSerializer(new HeatSerializer());
 			TagSerializer.AddSerializer(new FluidSerializer());

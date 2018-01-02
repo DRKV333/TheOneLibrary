@@ -78,6 +78,7 @@ namespace TheOneLibrary.UI.Elements
 					}
 					else if (!Main.mouseItem.IsAir && Main.mouseItem.type == Item.type)
 					{
+						if (maxStack > 0) Item.maxStack = maxStack;
 						int count = Math.Min(Main.mouseItem.stack, Item.maxStack - Item.stack);
 						Main.mouseItem.stack -= count;
 						Item.stack += count;

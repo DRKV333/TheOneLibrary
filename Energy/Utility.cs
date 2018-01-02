@@ -11,6 +11,6 @@ namespace TheOneLibrary.Utility
 
 		public static long CalculateGeneration(long energy, EnergyStorage storage) => Math.Min(energy, storage.GetCapacity() - storage.GetEnergy());
 
-		public static string AsPower(this long value, bool perSecond = false) => value.ToSI() + (perSecond ? TheOneLibrary.Config.EnergyUnitPerSecond : TheOneLibrary.Config.EnergyUnit + "/s");
+		public static string AsPower(this long value, bool perSecond = false) => value.ToSI() + (perSecond ? /*TheOneLibrary.Config.EnergyUnitPerSecond*/"W" : /*TheOneLibrary.Config.EnergyUnit*/  "J/s");
 	}
 }

@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using ReLogic.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using ReLogic.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -229,12 +229,12 @@ namespace TheOneLibrary.Utility
 		public static LocalizedText TextFromTranslation(this ModTranslation translation)
 		{
 			Type type = typeof(LocalizedText);
-			return (LocalizedText)type.Assembly.CreateInstance(type.FullName, false, BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] {translation.Key, translation.GetTranslation(Language.ActiveCulture.LegacyId)}, null, null);
+			return (LocalizedText)type.Assembly.CreateInstance(type.FullName, false, BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] { translation.Key, translation.GetTranslation(Language.ActiveCulture.LegacyId) }, null, null);
 		}
 
 		public static void EnableScissor(this SpriteBatch spriteBatch)
 		{
-			RasterizerState state = new RasterizerState {ScissorTestEnable = true};
+			RasterizerState state = new RasterizerState { ScissorTestEnable = true };
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, state, null, Main.UIScaleMatrix);
@@ -248,7 +248,7 @@ namespace TheOneLibrary.Utility
 
 		public static void SetupForShader(this SpriteBatch spriteBatch, Effect shader)
 		{
-			RasterizerState state = new RasterizerState {ScissorTestEnable = true};
+			RasterizerState state = new RasterizerState { ScissorTestEnable = true };
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, null, state, shader, Main.UIScaleMatrix);
@@ -385,8 +385,8 @@ namespace TheOneLibrary.Utility
 
 		public static string ToSI(this double d, IFormatProvider format = null)
 		{
-			char[] incPrefixes = {'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
-			char[] decPrefixes = {'m', '\u03bc', 'n', 'p', 'f', 'a', 'z', 'y'};
+			char[] incPrefixes = { 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y' };
+			char[] decPrefixes = { 'm', '\u03bc', 'n', 'p', 'f', 'a', 'z', 'y' };
 
 			if (Math.Abs(d) > 0.0)
 			{
@@ -459,7 +459,7 @@ namespace TheOneLibrary.Utility
 		public static string GetHotkeyValue(string hotkey)
 		{
 			Dictionary<string, ModHotKey> hotkeys = typeof(ModLoader).GetField<Dictionary<string, ModHotKey>>("modHotKeys");
-			return hotkeys != null && hotkeys.ContainsKey(hotkey) ? hotkeys[hotkey].GetAssignedKeys().First() : string.Empty;
+			return hotkeys != null && hotkeys.ContainsKey(hotkey) ? (hotkeys[hotkey].GetAssignedKeys().Any() ? hotkeys[hotkey].GetAssignedKeys().First() : "Unassigned") : string.Empty;
 		}
 
 		public static string ReplaceTagWithText(Match m) => colorGetText.Match(colorGetTag.Match(m.Value).Value).Value;

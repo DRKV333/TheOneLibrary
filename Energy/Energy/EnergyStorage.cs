@@ -100,6 +100,6 @@ namespace TheOneLibrary.Energy.Energy
 
 		public EnergyStorage GetEnergyStorage() => this;
 
-		public override string ToString() => energy.ToSI() + "/" + capacity.ToSI() + TheOneLibrary.Config.EnergyUnit;
+		public override string ToString() => energy.ToSI() + "/" + capacity.ToSI() + /*TheOneLibrary.Config.EnergyUnit*/"J";
 	}
 }

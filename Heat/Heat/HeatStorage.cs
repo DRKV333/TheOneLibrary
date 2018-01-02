@@ -100,6 +100,6 @@ namespace TheOneLibrary.Heat.Heat
 
 		public HeatStorage GetHeatStorage() => this;
 
-		public override string ToString() => heat.ToSI() + "/" + capacity.ToSI() + TheOneLibrary.Config.HeatUnit;
+		public override string ToString() => heat.ToSI() + "/" + capacity.ToSI() + /*TheOneLibrary.Config.HeatUnit*/"J";
 	}
 }
