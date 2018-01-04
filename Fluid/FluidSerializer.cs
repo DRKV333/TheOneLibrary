@@ -12,7 +12,7 @@ namespace TheOneLibrary.Fluid
 
 		public override ModFluid Deserialize(TagCompound tag)
 		{
-			ModFluid fluid = FluidLoader.GetFluid(tag.GetString("Type")).NewInstance();
+			ModFluid fluid = Utility.Utility.SetDefaults(FluidLoader.FluidType(tag.GetString("Type")));
 			fluid.volume = tag.GetInt("Volume");
 			return fluid;
 		}

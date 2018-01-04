@@ -84,6 +84,7 @@
     <Compile Include="Energy\UIEnergyBar.cs" />
     <Compile Include="Energy\Utility.cs" />
     <Compile Include="Fluid\Bucket.cs" />
+    <Compile Include="Fluid\BucketAttribute.cs" />
     <Compile Include="Fluid\FluidLoader.cs" />
     <Compile Include="Fluid\FluidSerializer.cs" />
     <Compile Include="Fluid\ModFluid.cs" />

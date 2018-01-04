@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Utilities;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -85,7 +86,7 @@ namespace TheOneLibrary.Fluid
 				if (fluid != null)
 				{
 					Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
-					if (!tile.nactive() || !Main.tileSolid[tile.type] || Main.tileSolidTop[tile.type])
+					if ((!tile.nactive() || !Main.tileSolid[tile.type] || Main.tileSolidTop[tile.type]) && TileLoader.GetTile(tile.type)?.GetType().GetAttribute<BucketDisable>() == null)
 					{
 						if (tile.liquid == 0 || tile.liquidType() == fluid.type)
 						{
