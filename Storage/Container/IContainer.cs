@@ -35,6 +35,17 @@ namespace TheOneLibrary.Storage
 	public interface IFluidContainer
 	{
 		IList<ModFluid> GetFluids();
+		
+		void SetFluid(ModFluid value, int slot = 0);
+
+		ModFluid GetFluid(int slot = 0);
+
+		int GetFluidCapacity(int slot = 0);
+	}
+
+	public interface IFluidContainerItem : IFluidContainer
+	{
+	
 	}
 
 	public interface ISidedFluidContainer : IFluidContainer

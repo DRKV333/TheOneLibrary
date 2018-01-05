@@ -190,6 +190,17 @@ namespace TheOneLibrary
 							(tile as BaseTile)?.RightClickCont(myX, myY);
 						}
 					}
+
+					if (Main.mouseLeft)
+					{
+						if (Main.tile[myX, myY] == null) Main.tile[myX, myY] = new Tile();
+						if (Main.tile[myX, myY].active())
+						{
+							int type = Main.tile[myX, myY].type;
+							ModTile tile = TileLoader.GetTile(type);
+							(tile as BaseTile)?.LeftClickCont(myX, myY);
+						}
+					}
 				}
 			}
 		}

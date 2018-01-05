@@ -2,8 +2,13 @@
 
 namespace TheOneLibrary.Fluid
 {
-	public class BucketDisable : Attribute
+	public class BucketDisablePlacement : Attribute
 	{
-		public BucketDisable() { }
+		public BucketDisablePlacement() { }
+	}
+
+	public class BucketDisablePickup : Attribute
+	{
+		public BucketDisablePickup() { }
 	}
 }

@@ -19,5 +19,9 @@ namespace TheOneLibrary.Base
 		public virtual void RightClickCont(int i, int j)
 		{
 		}
+
+		public virtual void LeftClickCont(int i, int j)
+		{
+		}
 	}
 }

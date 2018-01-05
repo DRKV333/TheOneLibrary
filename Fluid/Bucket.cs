@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Utilities;
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using TheOneLibrary.Base.Items;
+using TheOneLibrary.Storage;
 
 namespace TheOneLibrary.Fluid
 {
-	public class Bucket : BaseItem
+	public class Bucket : BaseItem, IFluidContainerItem
 	{
 		public override string Texture => TheOneLibrary.TexturePath + "Fluid/Bucket";
 
@@ -72,12 +73,11 @@ namespace TheOneLibrary.Fluid
 				spriteBatch.End();
 				spriteBatch.Begin();
 			}
+
+			item.SetNameOverride(fluid != null ? fluid.DisplayName.GetTranslation(Language.ActiveCulture) + " Bucket" : "Empty Bucket");
 		}
 
-		public override bool AltFunctionUse(Player player)
-		{
-			return true;
-		}
+		public override bool AltFunctionUse(Player player) => true;
 
 		public override bool UseItem(Player player)
 		{
@@ -86,7 +86,7 @@ namespace TheOneLibrary.Fluid
 				if (fluid != null)
 				{
 					Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
-					if ((!tile.nactive() || !Main.tileSolid[tile.type] || Main.tileSolidTop[tile.type]) && TileLoader.GetTile(tile.type)?.GetType().GetAttribute<BucketDisable>() == null)
+					if ((!tile.nactive() || !Main.tileSolid[tile.type] || Main.tileSolidTop[tile.type]) && TileLoader.GetTile(tile.type)?.GetType().GetAttribute<BucketDisablePlacement>() == null)
 					{
 						if (tile.liquid == 0 || tile.liquidType() == fluid.type)
 						{
@@ -97,11 +97,7 @@ namespace TheOneLibrary.Fluid
 							int volume = Math.Min(fluid.volume, 255 - tile.liquid);
 							tile.liquid += (byte)volume;
 							fluid.volume -= volume;
-							if (fluid.volume == 0)
-							{
-								fluid = null;
-								item.SetNameOverride("Empty Bucket");
-							}
+							if (fluid.volume == 0) fluid = null;
 
 							WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY);
 
@@ -119,15 +115,12 @@ namespace TheOneLibrary.Fluid
 				}
 
 				Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
-				if ((fluid == null || fluid.type == tile.liquidType()) && tile.liquid > 0)
+				if ((fluid == null || fluid.type == tile.liquidType()) && tile.liquid > 0 && TileLoader.GetTile(tile.type)?.GetType().GetAttribute<BucketDisablePickup>() == null)
 				{
 					Main.PlaySound(19, (int)player.position.X, (int)player.position.Y);
 
-					if (fluid == null)
-					{
-						fluid = Utility.Utility.SetDefaults(tile.liquidType());
-						item.SetNameOverride(fluid.DisplayName.GetTranslation(Language.ActiveCulture) + " Bucket");
-					}
+					if (fluid == null) fluid = Utility.Utility.SetDefaults(tile.liquidType());
+
 					int drain = Math.Min(tile.liquid, MaxAmount - fluid.volume);
 					fluid.volume += drain;
 
@@ -145,106 +138,27 @@ namespace TheOneLibrary.Fluid
 				}
 			}
 
-			/*if (player.itemTime == 0 && player.itemAnimation > 0 && player.controlUseItem)
-			{
-				Water.pickup(bucket + SuperAbsorbantSponge)
-				if (item.type == 205 && Main.tile[Player.tileTargetX, Player.tileTargetY].liquidType() == 0)
-				{
-					int liqType = Main.tile[Player.tileTargetX, Player.tileTargetY].liquidType();
-					int liqAmount = 0;
-
-					checks 3x3 area for liquid, only used for checking, might remove that
-					for (int num235 = Player.tileTargetX - 1; num235 <= Player.tileTargetX + 1; num235++)
-							{
-								for (int num236 = Player.tileTargetY - 1; num236 <= Player.tileTargetY + 1; num236++)
-								{
-									if (Main.tile[num235, num236].liquidType() == liqType)
-									{
-										liqAmount += Main.tile[num235, num236].liquid;
-									}
-								}
-							}
-					if (tile.liquid > 0)
-					{
-						int liquidType = tile.liquidType();
-						if (!tile.lava())
-						{
-							if (tile.honey())
-							{
-								item.stack--;
-								this.PutItemInInventory(1128, this.selectedItem);
-							}
-							else
-							{
-								item.stack--;
-								this.PutItemInInventory(206, this.selectedItem);
-							}
-						}
-						else
-						{
-							item.stack--;
-							this.PutItemInInventory(207, this.selectedItem);
-						}
-
-						for (int num238 = Player.tileTargetX - 1; num238 <= Player.tileTargetX + 1; num238++)
-						{
-							for (int num239 = Player.tileTargetY - 1; num239 <= Player.tileTargetY + 1; num239++)
-							{
-								if (num237 < 256 && Main.tile[num238, num239].liquidType() == liquidType)
-								{
-									int num240 = Main.tile[num238, num239].liquid;
-									if (num240 + num237 > 255)
-									{
-										num240 = 255 - num237;
-									}
-									num237 += num240;
-									Tile expr_A154 = Main.tile[num238, num239];
-									expr_A154.liquid -= (byte)num240;
-									Main.tile[num238, num239].liquidType(liquidType);
-									if (Main.tile[num238, num239].liquid == 0)
-									{
-										Main.tile[num238, num239].lava(false);
-										Main.tile[num238, num239].honey(false);
-									}
-									WorldGen.SquareTileFrame(num238, num239, false);
-									if (Main.netMode == 1)
-									{
-										NetMessage.sendWater(num238, num239);
-									}
-									else
-									{
-										Liquid.AddWater(num238, num239);
-									}
-								}
-							}
-						}
-					}
-				}
-				*/
-
 			return true;
 		}
 
-		public override TagCompound Save()
-		{
-			return fluid != null
-				? new TagCompound
-				{
-					["Type"] = fluid.Name,
-					["Volume"] = fluid.volume
-				}
-				: null;
-		}
+		public override TagCompound Save() => fluid != null ? new TagCompound { ["Type"] = fluid.Name, ["Volume"] = fluid.volume } : null;
 
 		public override void Load(TagCompound tag)
 		{
-			if (tag != null)
+			if (tag.Count != 0)
 			{
 				ModFluid f = FluidLoader.GetFluid(tag.GetString("Type")).NewInstance();
 				f.volume = tag.GetInt("Volume");
 				fluid = f;
-				item.SetNameOverride(fluid.DisplayName.GetTranslation(Language.ActiveCulture) + " Bucket");
 			}
 		}
+
+		public IList<ModFluid> GetFluids() => new List<ModFluid> { fluid };
+
+		public void SetFluid(ModFluid value, int slot = 0) => fluid = value;
+
+		public ModFluid GetFluid(int slot = 0) => fluid;
+
+		public int GetFluidCapacity(int slot = 0) => MaxAmount;
 	}
 }
