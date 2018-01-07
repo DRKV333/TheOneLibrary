@@ -7,40 +7,42 @@ namespace TheOneLibrary.UI.Elements
 {
 	public class UICycleButton : BaseElement
 	{
-		public Texture2D texture;
-		public int width;
-		public int height;
-		public int frameX;
-		public int frameY;
+		public Texture2D[] textures;
+		public int index;
 
-		public float opacity = 1f;
-		public Color color = Color.White;
+		public string HoverText;
 
-		public string Text;
-
-		public UICycleButton(Texture2D texture, int width, int height)
+		public UICycleButton(params Texture2D[] texture)
 		{
-			this.texture = texture;
-			this.width = width;
-			this.height = height;
+			textures = texture;
 		}
 
-		public void SetFrame(int frameX = 0, int frameY = 0)
+		public override void Click(UIMouseEvent evt)
 		{
-			this.frameX = frameX;
-			this.frameY = frameY;
+			base.Click(evt);
+
+			index++;
+			if (index > textures.Length - 1) index = 0;
+		}
+
+		public override void RightClick(UIMouseEvent evt)
+		{
+			base.RightClick(evt);
+
+			index--;
+			if (index < 0) index = textures.Length - 1;
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
 			CalculatedStyle dimensions = GetDimensions();
-			spriteBatch.Draw(texture, new Rectangle((int)dimensions.X, (int)dimensions.Y, (int)dimensions.Width, (int)dimensions.Height), new Rectangle(width * frameX, height * frameY, width, height), color * opacity);
+			spriteBatch.Draw(textures[index], new Rectangle((int)dimensions.X, (int)dimensions.Y, (int)dimensions.Width, (int)dimensions.Height), Color.White);
 
-			if (IsMouseHovering && !string.IsNullOrWhiteSpace(Text))
+			if (IsMouseHovering && !string.IsNullOrWhiteSpace(HoverText))
 			{
 				Main.LocalPlayer.showItemIcon = false;
 				Main.ItemIconCacheUpdate(0);
-				Main.instance.MouseTextHackZoom(Text);
+				Main.instance.MouseTextHackZoom(HoverText);
 				Main.mouseText = true;
 			}
 		}

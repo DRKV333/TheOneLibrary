@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.ID;
 using Terraria.UI;
 
 namespace TheOneLibrary.UI.Elements
@@ -9,47 +10,39 @@ namespace TheOneLibrary.UI.Elements
 	{
 		public Texture2D texture;
 
-		public float opacityActive = 1f;
-		public float opacityInactive = 0.6f;
-		public Color color = Color.White;
+		public string HoverText;
 
-		public string Text;
-
-		public bool toggle;
-		public bool toggleOnHover;
-
-		public UIButton(Texture2D texture, bool toggleOnHover = false)
+		public UIButton(Texture2D texture)
 		{
 			this.texture = texture;
-			this.toggleOnHover = toggleOnHover;
 		}
 
 		public override void MouseOver(UIMouseEvent evt)
 		{
-			toggle = true;
-
 			base.MouseOver(evt);
+
+			Main.PlaySound(SoundID.MenuTick);
 		}
 
 		public override void MouseOut(UIMouseEvent evt)
 		{
-			toggle = false;
-
 			base.MouseOut(evt);
+
+			Main.PlaySound(SoundID.MenuTick);
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
-			if (visible && texture != null)
+			if (texture != null)
 			{
 				CalculatedStyle dimensions = GetDimensions();
-				spriteBatch.Draw(texture, new Rectangle((int)dimensions.X, (int)dimensions.Y, (int)dimensions.Width, (int)dimensions.Height), color * (toggleOnHover && toggle ? opacityActive : opacityInactive));
+				spriteBatch.Draw(texture, new Rectangle((int)dimensions.X, (int)dimensions.Y, (int)dimensions.Width, (int)dimensions.Height), Color.White);
 
-				if (IsMouseHovering && !string.IsNullOrWhiteSpace(Text))
+				if (IsMouseHovering && !string.IsNullOrWhiteSpace(HoverText))
 				{
 					Main.LocalPlayer.showItemIcon = false;
 					Main.ItemIconCacheUpdate(0);
-					Main.instance.MouseTextHackZoom(Text);
+					Utility.Utility.DrawMouseText(HoverText);
 					Main.mouseText = true;
 				}
 			}

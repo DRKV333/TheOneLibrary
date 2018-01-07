@@ -2,7 +2,7 @@
 
 namespace TheOneLibrary.Fluid
 {
-	public class FluidSerializer : TagSerializer<ModFluid, TagCompound>
+	public class FluidSerializer : TagSerializer<ModFluid, TagCompound> 
 	{
 		public override TagCompound Serialize(ModFluid value) => new TagCompound
 		{

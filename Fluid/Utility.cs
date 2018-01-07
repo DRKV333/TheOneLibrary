@@ -12,5 +12,13 @@ namespace TheOneLibrary.Utility
 			fluid.SetStaticDefaults();
 			return fluid;
 		}
+
+		public static ModFluid SetDefaults(string name)
+		{
+			ModFluid fluid = FluidLoader.fluidNames[name].NewInstance();
+			fluid.SetDefaults();
+			fluid.SetStaticDefaults();
+			return fluid;
+		}
 	}
 }

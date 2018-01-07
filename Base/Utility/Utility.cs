@@ -295,7 +295,7 @@ namespace TheOneLibrary.Utility
 
 		public static bool HasSpace(List<Item> items, Item item) => items.FindAll(x => x.type == item.type).Select(x => x.maxStack - x.stack).Sum(x => x) >= item.stack || items.Any(t => t.IsAir);
 
-		public static void InsertItem(List<Item> from, List<Item> to) => from.ForEach(x => InsertItem(x, to));
+		public static void InsertItem(List<Item> from, List<Item> to) => @from.ForEach(x => InsertItem(x, to));
 
 		public static void InsertItem(Item item, List<Item> to)
 		{
@@ -459,7 +459,7 @@ namespace TheOneLibrary.Utility
 		public static string GetHotkeyValue(string hotkey)
 		{
 			Dictionary<string, ModHotKey> hotkeys = typeof(ModLoader).GetField<Dictionary<string, ModHotKey>>("modHotKeys");
-			return hotkeys != null && hotkeys.ContainsKey(hotkey) ? (hotkeys[hotkey].GetAssignedKeys().Any() ? hotkeys[hotkey].GetAssignedKeys().First() : "Unassigned") : string.Empty;
+			return hotkeys != null && hotkeys.ContainsKey(hotkey) ? (hotkeys[hotkey].GetAssignedKeys().Any() ? hotkeys[hotkey].GetAssignedKeys().First() : "Unassigned") : String.Empty;
 		}
 
 		public static string ReplaceTagWithText(Match m) => colorGetText.Match(colorGetTag.Match(m.Value).Value).Value;
@@ -491,7 +491,7 @@ namespace TheOneLibrary.Utility
 
 		public static string Subscript(this int number)
 		{
-			var intList = number.ToString().Select(digit => int.Parse(digit.ToString()));
+			var intList = number.ToString().Select(digit => Int32.Parse(digit.ToString()));
 			return intList.Aggregate("", (current, i) => current + ("\\u832" + i));
 		}
 
@@ -581,5 +581,7 @@ namespace TheOneLibrary.Utility
 			if (font == null) font = Main.fontMouseText;
 			return font.MeasureString(text);
 		}
+
+		public static bool IsChest(this Tile tile) => tile.type == 21 || TileLoader.ModChestName(tile.type).Length > 0;
 	}
 }

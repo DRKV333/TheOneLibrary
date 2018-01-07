@@ -97,7 +97,7 @@ namespace TheOneLibrary.Fluid
 							int volume = Math.Min(fluid.volume, 255 - tile.liquid);
 							tile.liquid += (byte)volume;
 							fluid.volume -= volume;
-							if (fluid.volume == 0) fluid = null;
+							if (fluid.volume <= 0) fluid = null;
 
 							WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY);
 
@@ -145,9 +145,9 @@ namespace TheOneLibrary.Fluid
 
 		public override void Load(TagCompound tag)
 		{
-			if (tag.Count != 0)
+			if (tag.Count > 0)
 			{
-				ModFluid f = FluidLoader.GetFluid(tag.GetString("Type")).NewInstance();
+				ModFluid f = Utility.Utility.SetDefaults(tag.GetString("Type"));
 				f.volume = tag.GetInt("Volume");
 				fluid = f;
 			}

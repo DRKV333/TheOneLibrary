@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.Graphics;
@@ -58,7 +58,7 @@ namespace TheOneLibrary
 
 			corner = ModLoader.GetTexture(TexturePath + "BarCorner");
 			side = ModLoader.GetTexture(TexturePath + "BarSide");
-			
+
 			TagSerializer.AddSerializer(new EnergySerializer());
 			TagSerializer.AddSerializer(new HeatSerializer());
 			TagSerializer.AddSerializer(new FluidSerializer());
