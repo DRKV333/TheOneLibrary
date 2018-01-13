@@ -53,12 +53,7 @@ namespace TheOneLibrary
 		public override void Load()
 		{
 			Instance = this;
-			borderTexture = TextureManager.Load("Images/UI/PanelBorder");
-			backgroundTexture = TextureManager.Load("Images/UI/PanelBackground");
-
-			corner = ModLoader.GetTexture(TexturePath + "BarCorner");
-			side = ModLoader.GetTexture(TexturePath + "BarSide");
-
+			
 			TagSerializer.AddSerializer(new EnergySerializer());
 			TagSerializer.AddSerializer(new HeatSerializer());
 			TagSerializer.AddSerializer(new FluidSerializer());
@@ -70,6 +65,12 @@ namespace TheOneLibrary
 
 			if (!Main.dedServ)
 			{
+				borderTexture = TextureManager.Load("Images/UI/PanelBorder");
+				backgroundTexture = TextureManager.Load("Images/UI/PanelBackground");
+
+				corner = ModLoader.GetTexture(TexturePath + "BarCorner");
+				side = ModLoader.GetTexture(TexturePath + "BarSide");
+
 				LayerDisplayUI = new LayerDisplayUI();
 				LayerDisplayUI.Activate();
 				ILayerDisplayUI = new UserInterface();

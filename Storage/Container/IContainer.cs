@@ -14,6 +14,7 @@ namespace TheOneLibrary.Storage
 
 	public interface IContainerItem : IContainer
 	{
+		ModItem GetItem();
 	}
 
 	public interface IContainerTile : IContainer
@@ -45,7 +46,7 @@ namespace TheOneLibrary.Storage
 
 	public interface IFluidContainerItem : IFluidContainer
 	{
-	
+		ModItem GetItem();
 	}
 
 	public interface ISidedFluidContainer : IFluidContainer

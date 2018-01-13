@@ -4,9 +4,11 @@ using ReLogic.Utilities;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using TheOneLibrary.Base;
 using TheOneLibrary.Base.Items;
 using TheOneLibrary.Storage;
 
@@ -101,7 +103,8 @@ namespace TheOneLibrary.Fluid
 
 							WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY);
 
-							if (Main.netMode == 1) NetMessage.sendWater(Player.tileTargetX, Player.tileTargetY);
+							if (Main.netMode == NetmodeID.MultiplayerClient) NetMessage.sendWater(Player.tileTargetX, Player.tileTargetY);
+							NetUtility.SyncItem(item);
 						}
 					}
 				}
@@ -133,8 +136,10 @@ namespace TheOneLibrary.Fluid
 					}
 
 					WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY, false);
-					if (Main.netMode == 1) NetMessage.sendWater(Player.tileTargetX, Player.tileTargetY);
+					if (Main.netMode == NetmodeID.MultiplayerClient) NetMessage.sendWater(Player.tileTargetX, Player.tileTargetY);
 					else Liquid.AddWater(Player.tileTargetX, Player.tileTargetY);
+
+					NetUtility.SyncItem(item);
 				}
 			}
 
@@ -160,5 +165,7 @@ namespace TheOneLibrary.Fluid
 		public ModFluid GetFluid(int slot = 0) => fluid;
 
 		public int GetFluidCapacity(int slot = 0) => MaxAmount;
+
+		public ModItem GetItem() => this;
 	}
 }

@@ -1,12 +1,16 @@
-﻿using System.IO;
+﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace TheOneLibrary.Base
 {
-	public static class NetHelper
+	public static class NetUtility
 	{
 		public static void HandlePacket(BinaryReader reader, int sender)
 		{
@@ -31,7 +35,7 @@ namespace TheOneLibrary.Base
 				packet.Send();
 			}
 		}
-
+		
 		public static void ReceiveClientSendTEUpdate(BinaryReader reader, int sender)
 		{
 			if (Main.netMode == NetmodeID.Server)
@@ -45,27 +49,27 @@ namespace TheOneLibrary.Base
 			}
 		}
 
-		public static void SyncEntity(byte id, int index)
+		public static void SendChatMessage(object message, Color? color = null)
 		{
-			if (Main.netMode != NetmodeID.Server) return;
-			switch (id)
+			if (Main.netMode == NetmodeID.SinglePlayer) Main.NewText(message, color ?? Color.White);
+			else NetMessage.BroadcastChatMessage(NetworkText.FromLiteral(message.ToString()), color ?? Color.White);
+		}
+
+		public static void SyncItem(Item item)
+		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
-				case MessageID.SyncItem:
-					NetMessage.SendData(MessageID.SyncItem, number: index);
-					return;
-				case MessageID.SyncNPC:
-					NetMessage.SendData(MessageID.SyncNPC, number: index);
-					return;
-				case MessageID.SyncProjectile:
-					NetMessage.SendData(MessageID.SyncProjectile, number: index);
-					return;
-				default:
-					return;
+				Player player = Main.player[item.owner];
+				List<Item> joined = player.inventory.Concat(player.armor).Concat(player.dye).Concat(player.miscEquips).Concat(player.miscDyes).Concat(player.bank.item).Concat(player.bank2.item).Concat(new[] { player.trashItem }).Concat(player.bank3.item).ToList();
+				int index = joined.FindIndex(x => x == item);
+				if (index < 0) return;
+				
+				NetMessage.SendData(MessageID.SyncEquipment, number: item.owner, number2: index);
 			}
 		}
 	}
 
-	enum MessageType : byte
+	internal enum MessageType : byte
 	{
 		ClientSendTEUpdate
 	}

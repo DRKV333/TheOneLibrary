@@ -46,10 +46,9 @@ namespace TheOneLibrary.UI.Elements
 		{
 			base.Click(evt);
 
-			if (CanInteract == null || CanInteract != null && CanInteract.Invoke(Item, Main.mouseItem))
+			if (CanInteract?.Invoke(Item, Main.mouseItem) ?? true)
 			{
 				Main.PlaySound(SoundID.MenuTick);
-				OnInteract?.Invoke();
 
 				if (Item.IsAir)
 				{
@@ -85,17 +84,19 @@ namespace TheOneLibrary.UI.Elements
 						if (Main.mouseItem.stack <= 0) Main.mouseItem.TurnToAir();
 					}
 				}
+
+				OnInteract?.Invoke();
 			}
 
 			(Container as IContainerTile)?.GetTileEntity().SendUpdate();
-			if (Container is IContainerItem) NetHelper.SyncEntity(MessageID.SyncItem, slot);
+			if (Container is IContainerItem) NetUtility.SyncItem((Container as IContainerItem)?.GetItem().item);
 		}
 
 		public override void RightClick(UIMouseEvent evt)
 		{
 			base.RightClick(evt);
 
-			if (CanInteract == null || CanInteract != null && CanInteract.Invoke(Item, Main.mouseItem))
+			if (CanInteract?.Invoke(Item, Main.mouseItem) ?? true)
 			{
 				Main.PlaySound(SoundID.MenuTick);
 				OnInteract?.Invoke();
@@ -106,7 +107,7 @@ namespace TheOneLibrary.UI.Elements
 			}
 
 			(Container as IContainerTile)?.GetTileEntity().SendUpdate();
-			if (Container is IContainerItem) NetHelper.SyncEntity(MessageID.SyncItem, slot);
+			if(Container is IContainerItem) NetUtility.SyncItem((Container as IContainerItem)?.GetItem().item);
 		}
 
 		public override int CompareTo(object obj) => slot.CompareTo(((UIContainerSlot)obj).slot);

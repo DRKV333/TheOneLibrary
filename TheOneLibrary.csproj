@@ -74,7 +74,7 @@
     <Compile Include="Base\Items\BaseItem.cs" />
     <Compile Include="Base\Items\DevItem.cs" />
     <Compile Include="Base\Items\Wrench.cs" />
-    <Compile Include="Base\NetHelper.cs" />
+    <Compile Include="Base\NetUtility.cs" />
     <Compile Include="Base\UI\Elements\UIHoverButton.cs" />
     <Compile Include="Energy\EnergySerializer.cs" />
     <Compile Include="Energy\Energy\EnergyStorage.cs" />

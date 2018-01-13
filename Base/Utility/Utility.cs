@@ -383,15 +383,15 @@ namespace TheOneLibrary.Utility
 
 		#region Math
 
-		public static string ToSI(this double d, IFormatProvider format = null)
+		public static string ToSI(this double value, string format = null)
 		{
 			char[] incPrefixes = { 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y' };
 			char[] decPrefixes = { 'm', '\u03bc', 'n', 'p', 'f', 'a', 'z', 'y' };
 
-			if (Math.Abs(d) > 0.0)
+			if (Math.Abs(value) > 0.0)
 			{
-				int degree = (int)Math.Floor(Math.Log10(Math.Abs(d)) / 3);
-				double scaled = d * Math.Pow(1000, -degree);
+				int degree = (int)Math.Floor(Math.Log10(Math.Abs(value)) / 3);
+				double scaled = value * Math.Pow(1000, -degree);
 
 				char? prefix = null;
 				switch (Math.Sign(degree))
@@ -406,12 +406,14 @@ namespace TheOneLibrary.Utility
 
 				return scaled.ToString(format) + prefix;
 			}
-			return d.ToString(CultureInfo.InvariantCulture);
+			return value.ToString(CultureInfo.InvariantCulture);
 		}
 
-		public static string ToSI(this float d, IFormatProvider format = null) => ToSI((double)d, format);
+		public static string ToSI(this float value, string format = null) => ToSI((double)value, format);
 
-		public static string ToSI(this long l, IFormatProvider format = null) => ToSI((double)l, format);
+		public static string ToSI(this long value, string format = null) => ToSI((double)value, format);
+
+		public static string ToSI(this int value, string format = null) => ToSI((double)value, format);
 
 		public static Point16 Min(this Point16 point, Point16 compareTo) => new Point16(point.X > compareTo.X ? compareTo.X : point.X, point.Y > compareTo.Y ? compareTo.Y : point.Y);
 
