@@ -147,6 +147,8 @@ namespace TheOneLibrary.Utility
 
 		public static void HandleUIFar(this ModTileEntity tileEntity, int distance = 320)
 		{
+			if (Main.netMode == NetmodeID.Server) return;
+
 			Dictionary<ModTileEntity, GUI> UIs = tileEntity.mod.GetTEUIs();
 
 			if (UIs != null)
@@ -180,6 +182,8 @@ namespace TheOneLibrary.Utility
 
 		public static void HandleUI<T>(this Mod mod, int ID) where T : BaseUI
 		{
+			if (Main.netMode == NetmodeID.Server) return;
+
 			Dictionary<ModTileEntity, GUI> UIs = mod.GetTEUIs();
 
 			if (UIs != null && ID >= 0)
@@ -192,6 +196,8 @@ namespace TheOneLibrary.Utility
 
 		public static void OpenUI<T>(this ModTileEntity tileEntity) where T : BaseUI
 		{
+			if (Main.netMode == NetmodeID.Server) return;
+
 			Dictionary<ModTileEntity, GUI> UIs = tileEntity.mod.GetTEUIs();
 
 			if (UIs != null)
@@ -209,6 +215,8 @@ namespace TheOneLibrary.Utility
 
 		public static void CloseUI(this Mod mod, int ID)
 		{
+			if (Main.netMode == NetmodeID.Server) return;
+
 			Dictionary<ModTileEntity, GUI> UIs = mod.GetTEUIs();
 
 			if (UIs != null && ID >= 0)
