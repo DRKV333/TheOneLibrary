@@ -24,6 +24,20 @@ using TheOneLibrary.Base.UI;
 
 namespace TheOneLibrary.Utility
 {
+	public static class UseStyleID
+	{
+		/// <summary>One (1)\nSwinging and throwing\nUsed for many weapons, block placement etc.</summary>
+		public const int SwingThrow = 1;
+		/// <summary>Two (2)\nEating or using\nUsed for many consumables such as potions or food</summary>
+		public const int EatingUsing = 2;
+		/// <summary>Three (3)\nStabbing\nUsed for shortswords</summary>
+		public const int Stabbing = 3;
+		/// <summary>Four (4)\nHolding up\nUsed for items such as mana/life crystals, life fruit and summoning items</summary>
+		public const int HoldingUp = 4;
+		/// <summary>Five (5)\nHolding out\nUsed for items such as guns, spellbooks, flails and spears</summary>
+		public const int HoldingOut = 5;
+	}
+
 	public static partial class Utility
 	{
 		public static string MouseText;
@@ -535,7 +549,9 @@ namespace TheOneLibrary.Utility
 
 		public static void DrawMouseText()
 		{
-			Main.LocalPlayer.showItemIcon = false;
+			if (MouseText == null) return;
+
+            Main.LocalPlayer.showItemIcon = false;
 			Main.ItemIconCacheUpdate(0);
 			Main.mouseText = true;
 
@@ -546,9 +562,7 @@ namespace TheOneLibrary.Utility
 			int hackedMouseY = Main.mouseY;
 			PlayerInput.SetZoom_UI();
 			PlayerInput.SetZoom_Test();
-
-			if (MouseText == null) return;
-
+            
 			int num = Main.mouseX + 10;
 			int num2 = Main.mouseY + 10;
 			if (hackedMouseX != -1 && hackedMouseY != -1)
@@ -584,6 +598,11 @@ namespace TheOneLibrary.Utility
 		public static void ModifyText(this TooltipLine line, string text)
 		{
 			line.text = text;
+		}
+
+		public static void ModifyColor(this TooltipLine line, Color color)
+		{
+			line.overrideColor = color;
 		}
 
 		public static Vector2 Measure(this string text, DynamicSpriteFont font = null)

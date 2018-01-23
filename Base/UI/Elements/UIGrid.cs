@@ -171,9 +171,9 @@ namespace TheOneLibrary.UI.Elements
 			spriteBatch.EnableScissor();
 
 			Rectangle prevRect = spriteBatch.GraphicsDevice.ScissorRectangle;
-			spriteBatch.GraphicsDevice.ScissorRectangle = GetDimensions().ToRectangle();
+			spriteBatch.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(GetClippingRectangle(spriteBatch), spriteBatch.GraphicsDevice.ScissorRectangle);
 
-			if (scrollbar != null) innerList.Top.Set(-scrollbar.GetValue(), 0f);
+            if (scrollbar != null) innerList.Top.Set(-scrollbar.GetValue(), 0f);
 			RecalculateChildren();
 			Recalculate();
 			base.DrawSelf(spriteBatch);

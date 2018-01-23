@@ -61,7 +61,7 @@ namespace TheOneLibrary
 			FluidLoader.Autoload();
 			FluidLoader.SetupContent();
 
-			Main.OnPostDraw += Draw;
+			//Main.OnPostDraw += Draw;
 
 			if (!Main.dedServ)
 			{
@@ -82,27 +82,40 @@ namespace TheOneLibrary
 		{
 			recipes.Clear();
 
-			FluidLoader.Unload();
+            FluidLoader.Unload();
 
-			Main.OnPostDraw -= Draw;
+            //Main.OnPostDraw -= Draw;
 
-			this.UnloadNullableTypes();
+            this.UnloadNullableTypes();
 
 			GC.Collect();
 		}
 
-		public void Draw(GameTime gameTime)
-		{
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
-			Utility.Utility.DrawMouseText();
-			Main.spriteBatch.End();
-		}
+		//public void Draw(GameTime gameTime)
+		//{
+		//	Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.UIScaleMatrix);
+		//	Utility.Utility.DrawMouseText();
+		//	Main.spriteBatch.End();
+		//}
 
 		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
 		{
 			int InventoryIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Inventory"));
+			int MouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 
-			if (InventoryIndex != -1)
+		    if (MouseTextIndex != -1)
+		    {
+		        layers.Insert(MouseTextIndex+1, new LegacyGameInterfaceLayer(
+		            "OneLibrary: MouseText",
+		            delegate
+		            {
+		                Utility.Utility.DrawMouseText();
+
+                        return true;
+		            }, InterfaceScaleType.UI));
+            }
+
+            if (InventoryIndex != -1)
 			{
 				if (!Main.playerInventory && !Main.ingameOptionsWindow && LayerManager.ActiveLayer != null && (Main.LocalPlayer.armor.Any(x => x.type == ItemType<Monocle>()) || Utility.Utility.HeldItem.type == ItemType<LayerTool>()))
 				{
