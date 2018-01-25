@@ -2,12 +2,14 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent.Achievements;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria.UI.Chat;
 using TheOneLibrary.Base;
 using TheOneLibrary.Storage;
+using TheOneLibrary.Utility;
 
 namespace TheOneLibrary.UI.Elements
 {
@@ -48,66 +50,195 @@ namespace TheOneLibrary.UI.Elements
 
 			if (CanInteract?.Invoke(Item, Main.mouseItem) ?? true)
 			{
-				Main.PlaySound(SoundID.MenuTick);
+				Item.newAndShiny = false;
+				Player player = Main.LocalPlayer;
 
-				if (Item.IsAir)
+				if (ItemSlot.ShiftInUse)
 				{
-					if (!Main.mouseItem.IsAir)
+					Main.NewText("move to inventory");
+					return;
+				}
+
+				Item temp = Item;
+				Utils.Swap(ref temp, ref Main.mouseItem);
+				Item = temp;
+
+				if (Item.stack > 0) AchievementsHelper.NotifyItemPickup(player, Item);
+				if (Item.type == 0 || Item.stack < 1) Item = new Item();
+				if (Main.mouseItem.IsTheSameAs(Item))
+				{
+					Utils.Swap(ref Item.favorited, ref Main.mouseItem.favorited);
+					if (Item.stack != Item.maxStack && Main.mouseItem.stack != Main.mouseItem.maxStack)
 					{
-						Item = Main.mouseItem.Clone();
-						if (maxStack > 0) Item.maxStack = maxStack;
-						int count = Math.Min(Main.mouseItem.stack, Item.maxStack);
-						Item.stack = count;
-						Main.mouseItem.stack -= count;
-						if (Main.mouseItem.stack <= 0) Main.mouseItem.TurnToAir();
+						if (Main.mouseItem.stack + Item.stack <= Main.mouseItem.maxStack)
+						{
+							Item.stack += Main.mouseItem.stack;
+							Main.mouseItem.stack = 0;
+						}
+						else
+						{
+							int delta = Main.mouseItem.maxStack - Item.stack;
+							Item.stack += delta;
+							Main.mouseItem.stack -= delta;
+						}
 					}
 				}
-				else
+				if (Main.mouseItem.type == 0 || Main.mouseItem.stack < 1) Main.mouseItem = new Item();
+				if (Main.mouseItem.type > 0 || Item.type > 0)
 				{
-					if (Main.mouseItem.IsAir)
-					{
-						Main.mouseItem = Item.Clone();
-						Item temp = new Item();
-						temp.SetDefaults(Item.type);
-						Main.mouseItem.maxStack = temp.maxStack;
-						int count = Math.Min(Item.stack, Main.mouseItem.maxStack);
-						Main.mouseItem.stack = count;
-						Item.stack -= count;
-						if (Item.stack <= 0) Item.TurnToAir();
-					}
-					else if (!Main.mouseItem.IsAir && Main.mouseItem.type == Item.type)
-					{
-						if (maxStack > 0) Item.maxStack = maxStack;
-						int count = Math.Min(Main.mouseItem.stack, Item.maxStack - Item.stack);
-						Main.mouseItem.stack -= count;
-						Item.stack += count;
-						if (Main.mouseItem.stack <= 0) Main.mouseItem.TurnToAir();
-					}
+					Terraria.Recipe.FindRecipes();
+					Main.PlaySound(7);
 				}
 
 				OnInteract?.Invoke();
 			}
 
-			(Container as IContainerTile)?.GetTileEntity().SendUpdate();
-			if (Container is IContainerItem) NetUtility.SyncItem((Container as IContainerItem)?.GetItem().item);
+			SendUpdate();
 		}
 
-		public override void RightClick(UIMouseEvent evt)
+		public void RightMouseDownCont()
 		{
-			base.RightClick(evt);
-
 			if (CanInteract?.Invoke(Item, Main.mouseItem) ?? true)
 			{
-				Main.PlaySound(SoundID.MenuTick);
 				OnInteract?.Invoke();
 
-				Item item = Item;
-				ItemSlot.RightClick(ref item);
-				Item = item;
-			}
+				Player player = Main.LocalPlayer;
+				Item.newAndShiny = false;
 
+				if (player.itemAnimation > 0) return;
+
+				bool specialClick = false;
+				if (ItemLoader.CanRightClick(Item))
+				{
+					ItemLoader.RightClick(Item, player);
+					specialClick = true;
+					SendUpdate();
+				}
+
+				if (specialClick) return;
+
+				if (Item.maxStack == 1 && Main.mouseRight && Main.mouseRightRelease)
+				{
+					if (Item.dye > 0)
+					{
+						object[] param = { Item, false };
+						Item = typeof(ItemSlot).InvokeMethod<Item>("DyeSwap", param);
+
+						if ((bool)param[1])
+						{
+							Main.EquipPageSelected = 0;
+							AchievementsHelper.HandleOnEquip(player, Item, 12);
+						}
+					}
+					else if (Main.projHook[Item.shoot])
+					{
+						object[] param = { Item, player.miscEquips, 4, false };
+						Item = typeof(ItemSlot).InvokeMethod<Item>("EquipSwap", param);
+
+						if ((bool)param[3])
+						{
+							Main.EquipPageSelected = 2;
+							AchievementsHelper.HandleOnEquip(player, Item, 16);
+						}
+					}
+					else if (Item.mountType != -1 && !MountID.Sets.Cart[Item.mountType])
+					{
+						object[] param = { Item, player.miscEquips, 3, false };
+						Item = typeof(ItemSlot).InvokeMethod<Item>("EquipSwap", param);
+
+						if ((bool)param[3])
+						{
+							Main.EquipPageSelected = 2;
+							AchievementsHelper.HandleOnEquip(player, Item, 17);
+						}
+					}
+					else if (Item.mountType != -1 && MountID.Sets.Cart[Item.mountType])
+					{
+						object[] param = { Item, player.miscEquips, 2, false };
+						Item = typeof(ItemSlot).InvokeMethod<Item>("EquipSwap", param);
+
+						if ((bool)param[3])
+						{
+							Main.EquipPageSelected = 2;
+						}
+					}
+					else if (Item.buffType > 0 && Main.lightPet[Item.buffType])
+					{
+						object[] param = { Item, player.miscEquips, 1, false };
+						Item = typeof(ItemSlot).InvokeMethod<Item>("EquipSwap", param);
+
+						if ((bool)param[3])
+						{
+							Main.EquipPageSelected = 2;
+						}
+					}
+					else if (Item.buffType > 0 && Main.vanityPet[Item.buffType])
+					{
+						object[] param = { Item, player.miscEquips, 0, false };
+						Item = typeof(ItemSlot).InvokeMethod<Item>("EquipSwap", param);
+
+						if ((bool)param[3])
+						{
+							Main.EquipPageSelected = 2;
+						}
+					}
+					else
+					{
+						Item item1 = Item;
+						object[] param = { Item, false };
+						Item = typeof(ItemSlot).InvokeMethod<Item>("ArmorSwap", param);
+
+						if ((bool)param[1])
+						{
+							Main.EquipPageSelected = 0;
+							AchievementsHelper.HandleOnEquip(player, item1, item1.accessory ? 10 : 8);
+						}
+					}
+					Terraria.Recipe.FindRecipes();
+					
+					return;
+				}
+
+				if (Main.stackSplit <= 1 && Main.mouseRight)
+				{
+					if (Item.maxStack > 1 && (Main.mouseItem.IsTheSameAs(Item) || Main.mouseItem.type == 0) && (Main.mouseItem.stack < Main.mouseItem.maxStack || Main.mouseItem.type == 0))
+					{
+						if (Main.mouseItem.type == 0)
+						{
+							Main.mouseItem = Item.Clone();
+							Main.mouseItem.stack = 0;
+							if (Item.favorited && Item.maxStack == 1) Main.mouseItem.favorited = true;
+							Main.mouseItem.favorited = false;
+						}
+						Main.mouseItem.stack++;
+						Item.stack--;
+						if (Item.stack <= 0) Item = new Item();
+
+						Terraria.Recipe.FindRecipes();
+
+						Main.soundInstanceMenuTick.Stop();
+						Main.soundInstanceMenuTick = Main.soundMenuTick.CreateInstance();
+						Main.PlaySound(12);
+
+						Main.stackSplit = Main.stackSplit == 0 ? 15 : Main.stackDelay;
+					}
+
+					SendUpdate();
+				}
+			}
+		}
+
+		public override void Update(GameTime gameTime)
+		{
+			base.Update(gameTime);
+
+			if (Main.mouseRight && Main.hasFocus && IsMouseHovering) RightMouseDownCont();
+		}
+
+		public void SendUpdate()
+		{
 			(Container as IContainerTile)?.GetTileEntity().SendUpdate();
-			if(Container is IContainerItem) NetUtility.SyncItem((Container as IContainerItem)?.GetItem().item);
+			if (Container is IContainerItem) NetUtility.SyncItem((Container as IContainerItem).GetItem().item);
 		}
 
 		public override int CompareTo(object obj) => slot.CompareTo(((UIContainerSlot)obj).slot);

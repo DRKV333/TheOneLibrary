@@ -563,34 +563,34 @@ namespace TheOneLibrary.Utility
 			PlayerInput.SetZoom_UI();
 			PlayerInput.SetZoom_Test();
             
-			int num = Main.mouseX + 10;
-			int num2 = Main.mouseY + 10;
+			int posX = Main.mouseX + 10;
+			int posY = Main.mouseY + 10;
 			if (hackedMouseX != -1 && hackedMouseY != -1)
 			{
-				num = hackedMouseX + 10;
-				num2 = hackedMouseY + 10;
+				posX = hackedMouseX + 10;
+				posY = hackedMouseY + 10;
 			}
 			if (Main.ThickMouse)
 			{
-				num += 6;
-				num2 += 6;
+				posX += 6;
+				posY += 6;
 			}
 
 			Vector2 vector = Main.fontMouseText.MeasureString(MouseText);
 			if (hackedScreenHeight != -1 && hackedScreenWidth != -1)
 			{
-				if (num + vector.X + 4f > hackedScreenWidth) num = (int)(hackedScreenWidth - vector.X - 4f);
-				if (num2 + vector.Y + 4f > hackedScreenHeight) num2 = (int)(hackedScreenHeight - vector.Y - 4f);
+				if (posX + vector.X + 4f > hackedScreenWidth) posX = (int)(hackedScreenWidth - vector.X - 4f);
+				if (posY + vector.Y + 4f > hackedScreenHeight) posY = (int)(hackedScreenHeight - vector.Y - 4f);
 			}
 			else
 			{
-				if (num + vector.X + 4f > Main.screenWidth) num = (int)(Main.screenWidth - vector.X - 4f);
-				if (num2 + vector.Y + 4f > Main.screenHeight) num2 = (int)(Main.screenHeight - vector.Y - 4f);
+				if (posX + vector.X + 4f > Main.screenWidth) posX = (int)(Main.screenWidth - vector.X - 4f);
+				if (posY + vector.Y + 4f > Main.screenHeight) posY = (int)(Main.screenHeight - vector.Y - 4f);
 			}
 
 			Color baseColor = new Color(Main.mouseTextColor, Main.mouseTextColor, Main.mouseTextColor, Main.mouseTextColor);
 
-			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, Main.fontMouseText, MouseText, new Vector2(num, num2), baseColor, 0f, Vector2.Zero, Vector2.One);
+			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, Main.fontMouseText, MouseText, new Vector2(posX, posY), baseColor, 0f, Vector2.Zero, Vector2.One);
 
 			MouseText = null;
 		}

@@ -167,7 +167,7 @@ namespace TheOneLibrary.UI.Elements
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
-		{
+		{   
 			spriteBatch.EnableScissor();
 
 			Rectangle prevRect = spriteBatch.GraphicsDevice.ScissorRectangle;
