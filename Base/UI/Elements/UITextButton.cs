@@ -12,8 +12,8 @@ namespace TheOneLibrary.UI.Elements
 	{
 		public string Text;
 
-		private UIPanel panel = new UIPanel();
-		private UIText uiText;
+		public UIPanel panel = new UIPanel();
+		public UIText uiText;
 
 		private float padding;
 

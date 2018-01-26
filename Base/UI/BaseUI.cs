@@ -39,13 +39,13 @@ namespace TheOneLibrary.Base.UI
 		public Vector2 offset;
 		public bool dragging;
 
-		public void DragStart(UIMouseEvent evt, UIElement listeningElement)
+		public virtual void DragStart(UIMouseEvent evt, UIElement listeningElement)
 		{
 			offset = new Vector2(evt.MousePosition.X - panelMain.Left.Pixels, evt.MousePosition.Y - panelMain.Top.Pixels);
 			dragging = true;
 		}
 
-		public void DragEnd(UIMouseEvent evt, UIElement listeningElement)
+		public virtual void DragEnd(UIMouseEvent evt, UIElement listeningElement)
 		{
 			if (dragging)
 			{

@@ -1,13 +1,13 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using ReLogic.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using ReLogic.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -118,7 +118,6 @@ namespace TheOneLibrary.Utility
 		#endregion
 
 		#region UI
-
 		public static void DrawPanel(this SpriteBatch spriteBatch, Rectangle dimensions, Texture2D texture, Color color)
 		{
 			Point point = new Point(dimensions.X, dimensions.Y);
@@ -317,7 +316,7 @@ namespace TheOneLibrary.Utility
 
 		public static bool HasSpace(List<Item> items, Item item) => items.FindAll(x => x.type == item.type).Select(x => x.maxStack - x.stack).Sum(x => x) >= item.stack || items.Any(t => t.IsAir);
 
-		public static void InsertItem(List<Item> from, List<Item> to) => @from.ForEach(x => InsertItem(x, to));
+		public static void InsertItem(List<Item> from, List<Item> to) => from.ForEach(x => InsertItem(x, to));
 
 		public static void InsertItem(Item item, List<Item> to)
 		{
@@ -404,7 +403,6 @@ namespace TheOneLibrary.Utility
 		#endregion
 
 		#region Math
-
 		public static string ToSI(this double value, string format = null)
 		{
 			char[] incPrefixes = { 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y' };
@@ -455,6 +453,12 @@ namespace TheOneLibrary.Utility
 			return value;
 		}
 
+		public static int ToNearest(this float value, int step)
+		{
+			int output = (int)Math.Round((double)value / step);
+			if (Math.Abs(output) < 0.0 && value> 0) output += 1;
+			return output * step;
+		}
 		#endregion
 
 		#region Other
