@@ -10,8 +10,6 @@ namespace TheOneLibrary.UI.Elements
 {
 	public class UITextButton : BaseElement
 	{
-		public string Text;
-
 		public UIPanel panel = new UIPanel();
 		public UIText uiText;
 
@@ -19,7 +17,6 @@ namespace TheOneLibrary.UI.Elements
 
 		public UITextButton(string text, float padding = 12)
 		{
-			Text = text;
 			this.padding = padding;
 
 			panel.Width.Precent = 1;
@@ -28,9 +25,15 @@ namespace TheOneLibrary.UI.Elements
 			panel.SetPadding(0);
 			Append(panel);
 
-			uiText = new UIText(Text);
+			uiText = new UIText(text);
 			uiText.Center();
 			panel.Append(uiText);
+		}
+
+		public void SetText(string text)
+		{
+			uiText.SetText(text);
+			Recalculate();
 		}
 
 		public void SetColor(Color? panelColor = null, Color? textColor = null)
@@ -39,13 +42,15 @@ namespace TheOneLibrary.UI.Elements
 			uiText.TextColor = textColor ?? Color.White;
 		}
 
-		public void RescaleText()
+		public override void Recalculate()
 		{
+			base.Recalculate();
+
 			CalculatedStyle dimensions = panel.GetDimensions();
 			if (dimensions.Width > 0 && dimensions.Height > 0)
 			{
-				float textScale = Math.Min((dimensions.Width - padding) / Main.fontMouseText.MeasureString(Text).X, (dimensions.Height - padding) / Main.fontMouseText.MeasureString(Text).Y);
-				uiText.SetText(Text, textScale, false);
+				float textScale = Math.Min((dimensions.Width - padding) / Main.fontMouseText.MeasureString(uiText.Text).X, (dimensions.Height - padding) / Main.fontMouseText.MeasureString(uiText.Text).Y);
+				uiText.SetText(uiText.Text, textScale, false);
 			}
 		}
 	}

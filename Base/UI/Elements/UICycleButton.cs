@@ -44,7 +44,7 @@ namespace TheOneLibrary.UI.Elements
             {
                 Main.LocalPlayer.showItemIcon = false;
                 Main.ItemIconCacheUpdate(0);
-                Main.instance.MouseTextHackZoom(HoverText);
+                Utility.Utility.DrawMouseText(HoverText);
                 Main.mouseText = true;
             }
         }

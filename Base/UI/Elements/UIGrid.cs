@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
@@ -113,7 +113,6 @@ namespace TheOneLibrary.UI.Elements
 
 		public override void RecalculateChildren()
 		{
-			base.RecalculateChildren();
 			float top = 0f;
 			float left = 0f;
 
@@ -167,28 +166,30 @@ namespace TheOneLibrary.UI.Elements
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
-		{   
-			spriteBatch.EnableScissor();
+		{
+			spriteBatch.End();
+
+			RasterizerState state = new RasterizerState { ScissorTestEnable = true };
 
 			Rectangle prevRect = spriteBatch.GraphicsDevice.ScissorRectangle;
-			spriteBatch.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(GetClippingRectangle(spriteBatch), spriteBatch.GraphicsDevice.ScissorRectangle);
+            
+            spriteBatch.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(GetClippingRectangle(spriteBatch), spriteBatch.GraphicsDevice.ScissorRectangle);
+            
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, state, null, Main.UIScaleMatrix);
 
-            if (scrollbar != null) innerList.Top.Set(-scrollbar.GetValue(), 0f);
+			DrawSelf(spriteBatch);
 			RecalculateChildren();
-			Recalculate();
-			base.DrawSelf(spriteBatch);
-			typeof(UIInnerList).InvokeMethod<object>("DrawChildren", new object[] {spriteBatch}, innerList);
+			typeof(UIInnerList).InvokeMethod<object>("DrawChildren", new object[] { spriteBatch }, innerList);
 
+			spriteBatch.End();
 			spriteBatch.GraphicsDevice.ScissorRectangle = prevRect;
-			spriteBatch.DisableScissor();
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, null, null, Main.UIScaleMatrix);
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
 			if (scrollbar != null) innerList.Top.Set(-scrollbar.GetValue(), 0f);
 			Recalculate();
-
-			base.DrawSelf(spriteBatch);
 		}
 	}
 }
