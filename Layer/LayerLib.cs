@@ -24,15 +24,22 @@ namespace TheOneLibrary.Layer
 
 		public override void PostDrawTiles()
 		{
-			RasterizerState rasterizer = Main.gameMenu || Main.LocalPlayer.gravDir == 1.0 ? RasterizerState.CullCounterClockwise : RasterizerState.CullClockwise;
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            try
+            {
+                RasterizerState rasterizer = Main.gameMenu || Main.LocalPlayer.gravDir == 1.0 ? RasterizerState.CullCounterClockwise : RasterizerState.CullClockwise;
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-			foreach (KeyValuePair<string, ILayer> layer in LayerManager.layers) layer.Value.Draw();
+                foreach (KeyValuePair<string, ILayer> layer in LayerManager.layers) layer.Value.Draw();
 
-			if (LayerManager.ActiveLayer != null && Vector2.Distance(Main.LocalPlayer.Center, Utility.Utility.MouseToWorldVector() * 16) <= 320f &&
-			    LayerManager.ActiveLayer.GetInfo().DrawPreview) LayerManager.ActiveLayer.DrawPreview();
+                if (LayerManager.ActiveLayer != null && Vector2.Distance(Main.LocalPlayer.Center, Utility.Utility.MouseToWorldVector() * 16) <= 320f &&
+                    LayerManager.ActiveLayer.GetInfo().DrawPreview) LayerManager.ActiveLayer.DrawPreview();
 
-			Main.spriteBatch.End();
+                Main.spriteBatch.End();
+            }
+            catch (System.Exception ex)
+            {
+                ErrorLogger.Log(ex);
+            }
 		}
 	}
 

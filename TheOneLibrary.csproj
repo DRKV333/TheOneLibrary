@@ -76,6 +76,7 @@
     <Compile Include="Base\Items\Wrench.cs" />
     <Compile Include="Base\NetUtility.cs" />
     <Compile Include="Base\UI\Elements\UIHoverButton.cs" />
+    <Compile Include="Base\UI\Elements\UIStepSlider.cs" />
     <Compile Include="Base\UI\Elements\UITexture.cs" />
     <Compile Include="Energy\EnergySerializer.cs" />
     <Compile Include="Energy\Energy\EnergyStorage.cs" />

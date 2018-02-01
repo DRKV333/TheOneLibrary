@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.UI;
 
 namespace TheOneLibrary.UI.Elements
 {
-	public class UISlider : BaseElement
+	public class UIStepSlider : BaseElement
 	{
 		private static Color color = new Color(43, 56, 101, 200);
 
@@ -39,7 +40,7 @@ namespace TheOneLibrary.UI.Elements
 		private MemberInfo member;
 		private object obj;
 		
-		public UISlider(MemberInfo value, int minValue = 0, int maxValue = 100, object obj = null)
+		public UIStepSlider(MemberInfo value, int minValue = 0, int maxValue = 100, object obj = null, params int[] steps)
 		{
 			Height.Set(16f, 0f);
 
@@ -48,8 +49,54 @@ namespace TheOneLibrary.UI.Elements
 
 			this.minValue = minValue;
 			this.maxValue = maxValue;
+
+			for (int i = 0; i < steps.Length; i++)
+			{
+				UIButton button = new UIButton(Main.colorSliderTexture);
+				button.Height.Pixels = 16f;
+				button.Width.Pixels = 7f;
+				button.VAlign = 0.5f;
+				button.Id = steps[i].ToString();
+				int i1 = i;
+				button.OnClick += (a, b) => CurrentValue = steps[i1];
+				Append(button);
+			}
 		}
-		
+
+		//public UIStepSlider(FieldInfo value, int minValue = 0, int maxValue = 100, params int[] steps)
+		//{
+		//	Height.Set(16f, 0f);
+
+		//	member = value;
+		//	CurrentValue = (int)value.GetValue(null);
+
+		//	this.minValue = minValue;
+		//	this.maxValue = maxValue;
+
+		//	for (int i = 0; i < steps.Length; i++)
+		//	{
+		//		UIButton button = new UIButton(Main.colorSliderTexture);
+		//		button.Height.Pixels = 16f;
+		//		button.Width.Pixels = 7f;
+		//		button.VAlign = 0.5f;
+		//		button.Id = steps[i].ToString();
+		//		int i1 = i;
+		//		button.OnClick += (a, b) => CurrentValue = steps[i1];
+		//		Append(button);
+		//	}
+		//}
+
+		public override void RecalculateChildren()
+		{
+			CalculatedStyle dimensions = GetDimensions();
+			UIElement[] elements = Elements.Where(x => x is UIButton).ToArray();
+			for (int i = 0; i < elements.Length; i++)
+			{
+				elements[i].Left.Set(dimensions.Width / maxValue * int.Parse(elements[i].Id), 0f);
+				elements[i].Recalculate();
+			}
+		}
+
 		public override void MouseDown(UIMouseEvent evt)
 		{
 			if (evt.Target == this) dragging = true;

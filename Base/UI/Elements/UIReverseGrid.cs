@@ -167,27 +167,25 @@ namespace TheOneLibrary.UI.Elements
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.EnableScissor();
-
-			Rectangle prevRect = spriteBatch.GraphicsDevice.ScissorRectangle;
-			spriteBatch.GraphicsDevice.ScissorRectangle = GetDimensions().ToRectangle();
-
-			if (scrollbar != null) innerList.Top.Set(scrollbar.GetValue(), 0f);
+		    spriteBatch.End();
+            RasterizerState state = new RasterizerState { ScissorTestEnable = true };
+            Rectangle prevRect = spriteBatch.GraphicsDevice.ScissorRectangle;
+            spriteBatch.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(GetClippingRectangle(spriteBatch), spriteBatch.GraphicsDevice.ScissorRectangle);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, state, null, Main.UIScaleMatrix);
+            
+			DrawSelf(spriteBatch);
 			RecalculateChildren();
-			Recalculate();
-			base.DrawSelf(spriteBatch);
 			typeof(UIInnerList).InvokeMethod<object>("DrawChildren", new object[] {spriteBatch}, innerList);
 
-			spriteBatch.GraphicsDevice.ScissorRectangle = prevRect;
-			spriteBatch.DisableScissor();
-		}
+		    spriteBatch.End();
+		    spriteBatch.GraphicsDevice.ScissorRectangle = prevRect;
+		    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, null, null, Main.UIScaleMatrix);
+        }
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
 			if (scrollbar != null) innerList.Top.Set(scrollbar.GetValue(), 0f);
 			Recalculate();
-
-			base.DrawSelf(spriteBatch);
 		}
 	}
 }

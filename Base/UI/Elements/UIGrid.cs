@@ -116,20 +116,22 @@ namespace TheOneLibrary.UI.Elements
 			float top = 0f;
 			float left = 0f;
 
+			innerListHeight = 0;
 			for (int i = 0; i < items.Count; i++)
 			{
-				items[i].Top.Set(top, 0f);
-				items[i].Left.Set(left, 0f);
-				items[i].Recalculate();
+				UIElement item = items[i];
+				item.Top.Set(top, 0f);
+				item.Left.Set(left, 0f);
+				item.Recalculate();
 				if (i % columns == columns - 1 && i < items.Count - 1)
 				{
-					top += items[i].GetOuterDimensions().Height + ListPadding;
+					top += item.GetOuterDimensions().Height + ListPadding;
 					left = 0;
 				}
-				else left += items[i].GetOuterDimensions().Width + ListPadding;
+				else left += item.GetOuterDimensions().Width + ListPadding;
+				innerListHeight = top + items.Last().GetDimensions().Height;
 			}
-
-			innerListHeight = items.Select(x => x.GetDimensions().Height + ListPadding).Sum();
+			UpdateScrollbar();
 		}
 
 		private void UpdateScrollbar()
@@ -168,14 +170,10 @@ namespace TheOneLibrary.UI.Elements
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-
 			RasterizerState state = new RasterizerState { ScissorTestEnable = true };
-
 			Rectangle prevRect = spriteBatch.GraphicsDevice.ScissorRectangle;
-            
-            spriteBatch.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(GetClippingRectangle(spriteBatch), spriteBatch.GraphicsDevice.ScissorRectangle);
-            
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, state, null, Main.UIScaleMatrix);
+			spriteBatch.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(GetClippingRectangle(spriteBatch), spriteBatch.GraphicsDevice.ScissorRectangle);
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, state, null, Main.UIScaleMatrix);
 
 			DrawSelf(spriteBatch);
 			RecalculateChildren();

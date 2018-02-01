@@ -19,6 +19,11 @@ namespace TheOneLibrary.UI.Elements
             textures = texture;
         }
 
+        public UICycleButton(params Texture2D[] texture)
+        {
+            textures = texture;
+        }
+
         public override void Click(UIMouseEvent evt)
         {
             base.Click(evt);
