@@ -10,8 +10,6 @@ namespace TheOneLibrary.UI.Elements
 	{
 		public Texture2D texture;
 
-		public string HoverText;
-
 		public UIButton(Texture2D texture)
 		{
 			this.texture = texture;
@@ -38,13 +36,7 @@ namespace TheOneLibrary.UI.Elements
 				CalculatedStyle dimensions = GetDimensions();
 				spriteBatch.Draw(texture, new Rectangle((int)dimensions.X, (int)dimensions.Y, (int)dimensions.Width, (int)dimensions.Height), Color.White);
 
-				if (IsMouseHovering && !string.IsNullOrWhiteSpace(HoverText))
-				{
-					Main.LocalPlayer.showItemIcon = false;
-					Main.ItemIconCacheUpdate(0);
-					Utility.Utility.DrawMouseText(HoverText);
-					Main.mouseText = true;
-				}
+				base.DrawSelf(spriteBatch);
 			}
 		}
 	}

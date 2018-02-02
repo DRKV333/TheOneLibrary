@@ -14,9 +14,7 @@ namespace TheOneLibrary.UI.Elements
 
 		private Texture2D bar = Main.colorBarTexture;
 		private Texture2D slider = Main.colorSliderTexture;
-
-		public Func<int, string> HoverTextOverride;
-
+		
 		private bool dragging;
 		public float SliderPos
 		{
@@ -33,6 +31,8 @@ namespace TheOneLibrary.UI.Elements
 			}
 			set { (member as FieldInfo)?.SetValue(obj, value); (member as PropertyInfo)?.SetValue(obj, value); }
 		}
+
+		public new Func<int, string> HoverText;
 
 		public int minValue;
 		public int maxValue;
@@ -62,30 +62,7 @@ namespace TheOneLibrary.UI.Elements
 				Append(button);
 			}
 		}
-
-		//public UIStepSlider(FieldInfo value, int minValue = 0, int maxValue = 100, params int[] steps)
-		//{
-		//	Height.Set(16f, 0f);
-
-		//	member = value;
-		//	CurrentValue = (int)value.GetValue(null);
-
-		//	this.minValue = minValue;
-		//	this.maxValue = maxValue;
-
-		//	for (int i = 0; i < steps.Length; i++)
-		//	{
-		//		UIButton button = new UIButton(Main.colorSliderTexture);
-		//		button.Height.Pixels = 16f;
-		//		button.Width.Pixels = 7f;
-		//		button.VAlign = 0.5f;
-		//		button.Id = steps[i].ToString();
-		//		int i1 = i;
-		//		button.OnClick += (a, b) => CurrentValue = steps[i1];
-		//		Append(button);
-		//	}
-		//}
-
+		
 		public override void RecalculateChildren()
 		{
 			CalculatedStyle dimensions = GetDimensions();
@@ -124,7 +101,7 @@ namespace TheOneLibrary.UI.Elements
 				Main.LocalPlayer.showItemIcon = false;
 				Main.ItemIconCacheUpdate(0);
 				Main.mouseText = true;
-				Utility.Utility.DrawMouseText(HoverTextOverride?.Invoke(CurrentValue) ?? CurrentValue.ToString());
+				Utility.Utility.DrawMouseText(HoverText?.Invoke(CurrentValue) ?? CurrentValue.ToString());
 			}
 		}
 	}

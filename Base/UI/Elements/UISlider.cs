@@ -14,7 +14,7 @@ namespace TheOneLibrary.UI.Elements
 		private Texture2D bar = Main.colorBarTexture;
 		private Texture2D slider = Main.colorSliderTexture;
 
-		public Func<int, string> HoverTextOverride;
+		public new Func<int, string> HoverText;
 
 		private bool dragging;
 		public float SliderPos
@@ -35,10 +35,10 @@ namespace TheOneLibrary.UI.Elements
 
 		public int minValue;
 		public int maxValue;
-		
+
 		private MemberInfo member;
 		private object obj;
-		
+
 		public UISlider(MemberInfo value, int minValue = 0, int maxValue = 100, object obj = null)
 		{
 			Height.Set(16f, 0f);
@@ -49,7 +49,7 @@ namespace TheOneLibrary.UI.Elements
 			this.minValue = minValue;
 			this.maxValue = maxValue;
 		}
-		
+
 		public override void MouseDown(UIMouseEvent evt)
 		{
 			if (evt.Target == this) dragging = true;
@@ -72,13 +72,7 @@ namespace TheOneLibrary.UI.Elements
 
 			spriteBatch.Draw(slider, dimensions.Position() + new Vector2(SliderPos - slider.Width / 2f, dimensions.Height / 2f - slider.Height / 2f), Color.White);
 
-			if (IsMouseHovering)
-			{
-				Main.LocalPlayer.showItemIcon = false;
-				Main.ItemIconCacheUpdate(0);
-				Main.mouseText = true;
-				Utility.Utility.DrawMouseText(HoverTextOverride?.Invoke(CurrentValue) ?? CurrentValue.ToString());
-			}
+			if (IsMouseHovering) Utility.Utility.DrawMouseText(HoverText?.Invoke(CurrentValue) ?? CurrentValue.ToString());
 		}
 	}
 }
