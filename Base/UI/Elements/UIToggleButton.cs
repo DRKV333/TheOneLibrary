@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.UI;
@@ -24,21 +24,22 @@ namespace TheOneLibrary.UI.Elements
 		public override void MouseOver(UIMouseEvent evt)
 		{
 			base.MouseOver(evt);
+
 			Main.PlaySound(SoundID.MenuTick);
 		}
 
 		public override void MouseOut(UIMouseEvent evt)
 		{
 			base.MouseOut(evt);
+
 			Main.PlaySound(SoundID.MenuTick);
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
 			CalculatedStyle dimensions = GetDimensions();
-
-			float scale = Math.Min(dimensions.Width / texture.Width, dimensions.Height / texture.Height);
-			spriteBatch.Draw(texture, new Vector2(dimensions.X, dimensions.Y), null, Color.White * (toggled ? visibilityActive : visibilityInactive), 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+			
+			spriteBatch.Draw(texture, new Rectangle((int)dimensions.X, (int)dimensions.Y, (int)dimensions.Width, (int)dimensions.Height), null, Color.White * (toggled ? visibilityActive : visibilityInactive), 0f, Vector2.Zero, SpriteEffects.None, 0f);
 		}
 	}
 }

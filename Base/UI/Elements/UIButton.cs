@@ -31,13 +31,8 @@ namespace TheOneLibrary.UI.Elements
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
-			if (texture != null)
-			{
-				CalculatedStyle dimensions = GetDimensions();
-				spriteBatch.Draw(texture, new Rectangle((int)dimensions.X, (int)dimensions.Y, (int)dimensions.Width, (int)dimensions.Height), Color.White);
-
-				base.DrawSelf(spriteBatch);
-			}
+			CalculatedStyle dimensions = GetDimensions();
+			spriteBatch.Draw(texture, new Rectangle((int)dimensions.X, (int)dimensions.Y, (int)dimensions.Width, (int)dimensions.Height), Color.White);
 		}
 	}
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.UI;
+using TheOneLibrary.Utility;
 
 namespace TheOneLibrary.UI.Elements
 {
@@ -14,37 +15,35 @@ namespace TheOneLibrary.UI.Elements
 
 		private Texture2D bar = Main.colorBarTexture;
 		private Texture2D slider = Main.colorSliderTexture;
-		
+
 		private bool dragging;
 		public float SliderPos
 		{
-			get { return GetDimensions().Width / maxValue * CurrentValue; }
+			get { return (float)(GetDimensions().Width / maxValue * CurrentValue); }
 		}
 
-		public int CurrentValue
+		public double CurrentValue
 		{
-			get
-			{
-				if (member is FieldInfo) return (int)((FieldInfo)member).GetValue(obj);
-				if (member is PropertyInfo) return (int)((PropertyInfo)member)?.GetValue(obj);
-				return 0;
-			}
+			get { return member.GetValue<int>(obj); }
 			set { (member as FieldInfo)?.SetValue(obj, value); (member as PropertyInfo)?.SetValue(obj, value); }
 		}
 
-		public new Func<int, string> HoverText;
+		public new Func<double, string> HoverText;
 
-		public int minValue;
-		public int maxValue;
-		
+		public double minValue;
+		public double maxValue;
+
 		private MemberInfo member;
 		private object obj;
-		
-		public UIStepSlider(MemberInfo value, int minValue = 0, int maxValue = 100, object obj = null, params int[] steps)
+
+		public UIStepSlider(MemberInfo value, double minValue = 0, double maxValue = 100, object obj = null, params int[] steps)
 		{
 			Height.Set(16f, 0f);
 
 			member = value;
+
+			member.GetUnderlyingType();
+
 			this.obj = obj;
 
 			this.minValue = minValue;
@@ -62,14 +61,14 @@ namespace TheOneLibrary.UI.Elements
 				Append(button);
 			}
 		}
-		
+
 		public override void RecalculateChildren()
 		{
 			CalculatedStyle dimensions = GetDimensions();
 			UIElement[] elements = Elements.Where(x => x is UIButton).ToArray();
 			for (int i = 0; i < elements.Length; i++)
 			{
-				elements[i].Left.Set(dimensions.Width / maxValue * int.Parse(elements[i].Id), 0f);
+				elements[i].Left.Set(dimensions.Width / (float)maxValue * int.Parse(elements[i].Id), 0f);
 				elements[i].Recalculate();
 			}
 		}
@@ -92,17 +91,11 @@ namespace TheOneLibrary.UI.Elements
 			spriteBatch.Draw(bar, dimensions.Position() + new Vector2(5, 0), new Rectangle(6, 0, 1, 16), color, 0f, Vector2.Zero, new Vector2(dimensions.Width - 9, 1), SpriteEffects.None, 0f);
 			spriteBatch.Draw(bar, dimensions.Position() + new Vector2(dimensions.Width - 4, 0), new Rectangle(bar.Width - 4, 0, 4, 16), color);
 
-			if (dragging) CurrentValue = (int)MathHelper.Clamp((Main.mouseX - dimensions.X) * (maxValue / (dimensions.Width - 8f)), 0, maxValue);
+			if (dragging) CurrentValue = (int)Utility.Utility.Clamp((Main.mouseX - dimensions.X) * (maxValue / (dimensions.Width - 8f)), 0, maxValue);
 
 			spriteBatch.Draw(slider, dimensions.Position() + new Vector2(SliderPos - slider.Width / 2f, dimensions.Height / 2f - slider.Height / 2f), Color.White);
 
-			if (IsMouseHovering)
-			{
-				Main.LocalPlayer.showItemIcon = false;
-				Main.ItemIconCacheUpdate(0);
-				Main.mouseText = true;
-				Utility.Utility.DrawMouseText(HoverText?.Invoke(CurrentValue) ?? CurrentValue.ToString());
-			}
+			if (IsMouseHovering) Utility.Utility.DrawMouseText(HoverText?.Invoke(CurrentValue) ?? CurrentValue.ToString());
 		}
 	}
 }

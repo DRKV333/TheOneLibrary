@@ -18,8 +18,8 @@ namespace TheOneLibrary.UI.Elements
 		{
 			CalculatedStyle dimensions = GetDimensions();
 
-			spriteBatch.Draw(Main.magicPixel, dimensions.Position(), null, Color.Black, 0f, Vector2.Zero, new Vector2(dimensions.Width, dimensions.Height / 1000f), SpriteEffects.None, 0f);
-			spriteBatch.Draw(Main.magicPixel, dimensions.Position() + new Vector2(2), null, color, 0f, Vector2.Zero, new Vector2(dimensions.Width - 4f, (dimensions.Height - 4f) / 1000f), SpriteEffects.None, 0f);
+			spriteBatch.Draw(Main.magicPixel, new Rectangle((int)dimensions.X, (int)dimensions.Y, (int)dimensions.Width, (int)dimensions.Height), null, Color.Black, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+			spriteBatch.Draw(Main.magicPixel, new Rectangle((int)dimensions.X + 2, (int)dimensions.Y + 2, (int)dimensions.Width - 4, (int)dimensions.Height - 4), null, color, 0f, Vector2.Zero, SpriteEffects.None, 0f);
 		}
 	}
 }

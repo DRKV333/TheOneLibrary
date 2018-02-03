@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
-using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 using TheOneLibrary.Base.UI;
 using TheOneLibrary.Utility;
@@ -10,48 +10,26 @@ namespace TheOneLibrary.UI.Elements
 {
 	public class UITextButton : BaseElement
 	{
-		public UIPanel panel = new UIPanel();
-		public UIText uiText;
+		public Color PanelColor = BaseUI.panelColor;
+		public Color TextColor = Color.White;
+		public string text;
+		public float padding;
 
-		private float padding;
-
-		public UITextButton(string text, float padding = 12)
+		public UITextButton(string text, float padding = 8f)
 		{
+			this.text = text;
 			this.padding = padding;
-
-			panel.Width.Precent = 1;
-			panel.Height.Precent = 1;
-			panel.BackgroundColor = BaseUI.panelColor;
-			panel.SetPadding(0);
-			Append(panel);
-
-			uiText = new UIText(text);
-			uiText.Center();
-			panel.Append(uiText);
 		}
-
-		public void SetText(string text)
+		
+		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
-			uiText.SetText(text);
-			Recalculate();
-		}
+			CalculatedStyle dimensions = GetDimensions();
 
-		public void SetColor(Color? panelColor = null, Color? textColor = null)
-		{
-			panel.BackgroundColor = panelColor ?? BaseUI.panelColor;
-			uiText.TextColor = textColor ?? Color.White;
-		}
+			spriteBatch.DrawPanel(dimensions, TheOneLibrary.backgroundTexture, PanelColor);
+			spriteBatch.DrawPanel(dimensions, TheOneLibrary.borderTexture, Color.Black);
 
-		public override void Recalculate()
-		{
-			base.Recalculate();
-
-			CalculatedStyle dimensions = panel.GetDimensions();
-			if (dimensions.Width > 0 && dimensions.Height > 0)
-			{
-				float textScale = Math.Min((dimensions.Width - padding) / Main.fontMouseText.MeasureString(uiText.Text).X, (dimensions.Height - padding) / Main.fontMouseText.MeasureString(uiText.Text).Y);
-				uiText.SetText(uiText.Text, textScale, false);
-			}
+			float scale = Math.Min((dimensions.Width - padding * 2f) / text.Measure(Main.fontMouseText).X, (dimensions.Height - padding * 2f) / text.Measure(Main.fontMouseText).Y);
+			Utils.DrawBorderStringFourWay(spriteBatch, Main.fontMouseText, text, dimensions.Width / 2f, dimensions.Height / 2f, TextColor, Color.Black, text.Measure(Main.fontMouseText) * scale, scale);
 		}
 	}
 }

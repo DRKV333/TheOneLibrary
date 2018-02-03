@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
@@ -75,23 +75,30 @@ namespace TheOneLibrary.UI.Elements
 			base.Update(gameTime);
 		}
 
-		public virtual void Add(UIElement item)
+		public void Add(UIElement item)
 		{
-			item.Recalculate();
 			items.Add(item);
 			innerList.Append(item);
 			UpdateOrder();
 			innerList.Recalculate();
 		}
 
-		public virtual bool Remove(UIElement item)
+		public void AddRange(IEnumerable<UIElement> items)
+		{
+			this.items.AddRange(items);
+			foreach (var item in items) innerList.Append(item);
+			UpdateOrder();
+			innerList.Recalculate();
+		}
+
+		public bool Remove(UIElement item)
 		{
 			innerList.RemoveChild(item);
 			UpdateOrder();
 			return items.Remove(item);
 		}
 
-		public virtual void Clear()
+		public void Clear()
 		{
 			innerList.RemoveAllChildren();
 			items.Clear();
@@ -100,8 +107,6 @@ namespace TheOneLibrary.UI.Elements
 		public override void Recalculate()
 		{
 			base.Recalculate();
-
-			innerList.Recalculate();
 			UpdateScrollbar();
 		}
 
@@ -114,21 +119,24 @@ namespace TheOneLibrary.UI.Elements
 		public override void RecalculateChildren()
 		{
 			base.RecalculateChildren();
-			innerListHeight = items.Select(x => x.GetDimensions().Height + ListPadding).Sum();
+
+			innerListHeight = items.Select((x, i) => i % columns == columns - 1 ? x.GetOuterDimensions().Height + ListPadding : 0f).Sum();
+
 			float top = -innerListHeight + GetDimensions().Height;
 			float left = 0f;
 
 			for (int i = 0; i < items.Count; i++)
 			{
+				CalculatedStyle dimensions = items[i].GetOuterDimensions();
+				if (i % columns == columns - 1 /*&& i < items.Count - 1*/)
+				{
+					top += dimensions.Height + ListPadding;
+					left = 0;
+				}
+				else left += dimensions.Width + ListPadding;
 				items[i].Top.Set(top, 0f);
 				items[i].Left.Set(left, 0f);
 				items[i].Recalculate();
-				if (i % columns == columns - 1 && i < items.Count - 1)
-				{
-					top += items[i].GetOuterDimensions().Height + ListPadding;
-					left = 0;
-				}
-				else left += items[i].GetOuterDimensions().Width + ListPadding;
 			}
 		}
 
@@ -167,20 +175,20 @@ namespace TheOneLibrary.UI.Elements
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-		    spriteBatch.End();
-            RasterizerState state = new RasterizerState { ScissorTestEnable = true };
-            Rectangle prevRect = spriteBatch.GraphicsDevice.ScissorRectangle;
-            spriteBatch.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(GetClippingRectangle(spriteBatch), spriteBatch.GraphicsDevice.ScissorRectangle);
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, state, null, Main.UIScaleMatrix);
-            
+			spriteBatch.End();
+			RasterizerState state = new RasterizerState { ScissorTestEnable = true };
+			Rectangle prevRect = spriteBatch.GraphicsDevice.ScissorRectangle;
+			spriteBatch.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(GetClippingRectangle(spriteBatch), spriteBatch.GraphicsDevice.ScissorRectangle);
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, state, null, Main.UIScaleMatrix);
+
 			DrawSelf(spriteBatch);
 			RecalculateChildren();
-			typeof(UIInnerList).InvokeMethod<object>("DrawChildren", new object[] {spriteBatch}, innerList);
+			typeof(UIInnerList).InvokeMethod<object>("DrawChildren", new object[] { spriteBatch }, innerList);
 
-		    spriteBatch.End();
-		    spriteBatch.GraphicsDevice.ScissorRectangle = prevRect;
-		    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, null, null, Main.UIScaleMatrix);
-        }
+			spriteBatch.End();
+			spriteBatch.GraphicsDevice.ScissorRectangle = prevRect;
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, null, null, Main.UIScaleMatrix);
+		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -11,10 +12,10 @@ namespace TheOneLibrary.Base.UI.Elements
 	{
 		public Texture2D[] textures;
 
-		public string HoverText;
-
 		public UIHoverButton(params Texture2D[] texture)
 		{
+			if (texture.Length != 2) throw new Exception("UIHoverButton supports only 2 textures!");
+
 			textures = texture;
 		}
 
@@ -36,14 +37,6 @@ namespace TheOneLibrary.Base.UI.Elements
 		{
 			CalculatedStyle dimensions = GetDimensions();
 			spriteBatch.Draw(IsMouseHovering ? textures[1] : textures[0], new Rectangle((int)dimensions.X, (int)dimensions.Y, (int)dimensions.Width, (int)dimensions.Height), Color.White);
-			
-			if (IsMouseHovering && !string.IsNullOrWhiteSpace(HoverText))
-			{
-				Main.LocalPlayer.showItemIcon = false;
-				Main.ItemIconCacheUpdate(0);
-				Utility.Utility.DrawMouseText(HoverText);
-				Main.mouseText = true;
-			}
 		}
 	}
 }

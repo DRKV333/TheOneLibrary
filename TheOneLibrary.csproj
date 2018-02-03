@@ -125,7 +125,6 @@
     <Compile Include="Base\UI\Elements\UICycleButton.cs" />
     <Compile Include="Base\UI\Elements\UIGrid.cs" />
     <Compile Include="Base\UI\Elements\UIGridVisibility.cs" />
-    <Compile Include="Base\UI\Elements\UIItemSlot.cs" />
     <Compile Include="Base\UI\Elements\UIReverseGrid.cs" />
     <Compile Include="Base\UI\Elements\UISlider.cs" />
     <Compile Include="Base\UI\Elements\UITextButton.cs" />

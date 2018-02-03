@@ -115,23 +115,23 @@ namespace TheOneLibrary.UI.Elements
 		{
 			float top = 0f;
 			float left = 0f;
-
-			innerListHeight = 0;
+			
 			for (int i = 0; i < items.Count; i++)
 			{
 				UIElement item = items[i];
+				CalculatedStyle dimensions = item.GetOuterDimensions();
+				if (i % columns == columns - 1 /*&& i < items.Count - 1*/)
+				{
+					top += dimensions.Height + ListPadding;
+					left = 0;
+				}
+				else left += dimensions.Width + ListPadding;
 				item.Top.Set(top, 0f);
 				item.Left.Set(left, 0f);
 				item.Recalculate();
-				if (i % columns == columns - 1 && i < items.Count - 1)
-				{
-					top += item.GetOuterDimensions().Height + ListPadding;
-					left = 0;
-				}
-				else left += item.GetOuterDimensions().Width + ListPadding;
-				innerListHeight = top + items.Last().GetDimensions().Height;
 			}
-			UpdateScrollbar();
+
+			innerListHeight = items.Select((x, i) => i % columns == columns - 1 ? x.GetOuterDimensions().Height + ListPadding : 0f).Sum();
 		}
 
 		private void UpdateScrollbar()

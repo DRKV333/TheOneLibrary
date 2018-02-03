@@ -28,12 +28,16 @@ namespace TheOneLibrary.Utility
 	{
 		/// <summary>One (1)\nSwinging and throwing\nUsed for many weapons, block placement etc.</summary>
 		public const int SwingThrow = 1;
+
 		/// <summary>Two (2)\nEating or using\nUsed for many consumables such as potions or food</summary>
 		public const int EatingUsing = 2;
+
 		/// <summary>Three (3)\nStabbing\nUsed for shortswords</summary>
 		public const int Stabbing = 3;
+
 		/// <summary>Four (4)\nHolding up\nUsed for items such as mana/life crystals, life fruit and summoning items</summary>
 		public const int HoldingUp = 4;
+
 		/// <summary>Five (5)\nHolding out\nUsed for items such as guns, spellbooks, flails and spears</summary>
 		public const int HoldingOut = 5;
 	}
@@ -67,7 +71,6 @@ namespace TheOneLibrary.Utility
 		}
 
 		#region Tile Entity
-
 		public static Point16 TileEntityTopLeft(int i, int j)
 		{
 			if (i <= Main.maxTilesX && j <= Main.maxTilesY)
@@ -116,7 +119,6 @@ namespace TheOneLibrary.Utility
 			TileObjectData.GetTileInfo(tile, ref style, ref alt);
 			return TileObjectData.GetTileData(type, style, alt).Direction;
 		}
-
 		#endregion
 
 		#region UI
@@ -156,7 +158,7 @@ namespace TheOneLibrary.Utility
 		{
 			MouseText = text.ToString();
 			colorMouseText = color;
-		} 
+		}
 
 		public static void DrawMouseText()
 		{
@@ -327,7 +329,6 @@ namespace TheOneLibrary.Utility
 		#endregion
 
 		#region Inventory
-
 		public static bool HasItem(this Player player, int type, int stack)
 		{
 			int count = player.inventory.Where(t => type == t.type).Sum(t => t.stack);
@@ -418,37 +419,60 @@ namespace TheOneLibrary.Utility
 		public static bool HasWrench => HeldItem.modItem is Wrench;
 
 		public static bool IsCoin(this Item item) => item.type == ItemID.CopperCoin || item.type == ItemID.SilverCoin || item.type == ItemID.GoldCoin || item.type == ItemID.PlatinumCoin;
-
 		#endregion
 
 		#region Reflection
-
 		public static T GetFieldValue<T>(this Type type, string name, object obj = null, BindingFlags flags = defaultFlags) => (T)type.GetField(name, flags)?.GetValue(obj);
 
 		public static void SetFieldValue(this Type type, string name, object value, object obj = null, BindingFlags flags = defaultFlags) => type.GetField(name, flags)?.SetValue(obj, value);
 
-		public static T InvokeMethod<T>(this Type type, string name, object[] args, object obj = null, BindingFlags flags = defaultFlags) => (T)type.GetMethod(name, flags)?.Invoke(obj, args);
+		public static T InvokeMethod<T>(this Type type, string name, object[] args = null, object obj = null, BindingFlags flags = defaultFlags) => (T)type.GetMethod(name, flags)?.Invoke(obj, args);
 
 		public static bool HasAttribute<T>(this FieldInfo field) => field.GetCustomAttributes().Any(x => x.GetType() == typeof(T));
 
 		public static bool HasAttribute<T>(this PropertyInfo field) => field.GetCustomAttributes().Any(x => x.GetType() == typeof(T));
 
+		public static T GetValue<T>(this MemberInfo memberInfo, object obj)
+		{
+			switch (memberInfo.MemberType)
+			{
+				case MemberTypes.Field:
+					return (T)((FieldInfo)memberInfo).GetValue(obj);
+				case MemberTypes.Property:
+					return (T)((PropertyInfo)memberInfo).GetValue(obj);
+				default:
+					throw new NotImplementedException();
+			}
+		}
+
+		public static Type GetUnderlyingType(this MemberInfo member)
+		{
+			switch (member.MemberType)
+			{
+				case MemberTypes.Event:
+					return ((EventInfo)member).EventHandlerType;
+				case MemberTypes.Field:
+					return ((FieldInfo)member).FieldType;
+				case MemberTypes.Method:
+					return ((MethodInfo)member).ReturnType;
+				case MemberTypes.Property:
+					return ((PropertyInfo)member).PropertyType;
+				default:
+					throw new ArgumentException("Input MemberInfo must be if type EventInfo, FieldInfo, MethodInfo, or PropertyInfo");
+			}
+		}
 		#endregion
 
 		#region Color
-
 		public static Color DoubleLerp(Color c1, Color c2, Color c3, float step) => step < .5f ? Color.Lerp(c1, c2, step * 2f) : Color.Lerp(c2, c3, (step - .5f) * 2f);
 
 		public static string RGBToHex(Color color) => color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
-
 		#endregion
 
 		#region Collections
-
 		public static bool ContainsAll<T>(this List<T> subset, List<T> superset) => superset.Except(subset).Any();
 
 		public static bool IsEqual<T>(this List<T> list1, List<T> list2) => list1.All(list2.Contains) && list1.Count == list2.Count;
-
 		#endregion
 
 		#region Math
@@ -487,6 +511,13 @@ namespace TheOneLibrary.Utility
 		public static Point16 Min(this Point16 point, Point16 compareTo) => new Point16(point.X > compareTo.X ? compareTo.X : point.X, point.Y > compareTo.Y ? compareTo.Y : point.Y);
 
 		public static long Min(long val1, long val2, long val3) => Math.Min(val1, Math.Min(val2, val3));
+
+		public static double Clamp(double value, double min, double max)
+		{
+			if (value < min) value = min;
+			if (value > max) value = max;
+			return value;
+		}
 
 		public static int Clamp(int value, int min, int max)
 		{
